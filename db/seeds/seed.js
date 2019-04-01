@@ -13,7 +13,12 @@ exports.seed = (connection, Promise) => {
             .insert(topicsData)
             .into('topics')
             .then(() => {
-              return connection.insert(articleData).into('articles');
+              return connection
+                .insert(articleData)
+                .into('articles')
+                .then(() => {
+                  return connection.insert(commentsData).into('comments');
+                });
             });
         });
     });

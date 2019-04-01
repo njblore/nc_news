@@ -22,7 +22,7 @@ exports.up = function(connection, Promise) {
     .then(() => {
       return connection.schema.createTable('articles', articlesTable => {
         articlesTable.increments('article_id').primary();
-        articlesTable.string('title');
+        articlesTable.string('title').unique();
         articlesTable.string('topic');
         articlesTable
           .foreign('topic')
@@ -37,14 +37,33 @@ exports.up = function(connection, Promise) {
         articlesTable.integer('votes');
         articlesTable.bigInteger('created_at');
       });
+    })
+    .then(() => {
+      return connection.schema.createTable('comments', commentsTable => {
+        commentsTable.string('created_by');
+        commentsTable
+          .foreign('created_by')
+          .references('username')
+          .inTable('users');
+        commentsTable.text('body');
+        commentsTable.string('belongs_to');
+        commentsTable
+          .foreign('belongs_to')
+          .references('title')
+          .inTable('articles');
+        commentsTable.integer('votes');
+        commentsTable.bigInteger('created_at');
+      });
     });
 };
 
 exports.down = function(connection, Promise) {
   console.log('dropping users table...');
-  return connection.schema.dropTable('articles').then(() => {
-    return connection.schema.dropTable('topics').then(() => {
-      return connection.schema.dropTable('users');
+  return connection.schema.dropTableIfExists('comments').then(() => {
+    return connection.schema.dropTable('articles').then(() => {
+      return connection.schema.dropTable('topics').then(() => {
+        return connection.schema.dropTable('users');
+      });
     });
   });
 };
