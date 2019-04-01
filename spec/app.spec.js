@@ -19,17 +19,21 @@ describe('/', () => {
           expect(body.ok).to.equal(true);
         });
     });
-  });
-
-  describe('/api/topics', () => {
-    it('GET status:200 serves an array of objects', () => {
-      return request
-        .get('/api/topics')
-        .expect(200)
-        .then(res => {
-          expect(res.body.topics).to.be.an('array');
-          expect(res.body.topics[0]).to.contain.keys('slug', 'description');
-        });
+    describe('/api/topics', () => {
+      it('GET status:200 serves an array of topic objects', () => {
+        return request
+          .get('/api/topics')
+          .expect(200)
+          .then(res => {
+            expect(res.body.topics).to.be.an('array');
+            expect(res.body.topics[0]).to.contain.keys('slug', 'description');
+          });
+      });
+    });
+    describe('/api/articles', () => {
+      it('GET status: 200 serves an array of article objects', () => {
+        return request.get('/api/articles').expect(200);
+      });
     });
   });
 });
