@@ -5,6 +5,11 @@ exports.seed = (connection, Promise) => {
     .rollback()
     .then(() => connection.migrate.latest())
     .then(() => {
-      return connection.insert(usersData).into('users');
+      return connection
+        .insert(usersData)
+        .into('users')
+        .then(() => {
+          return connection.insert(topicsData).into('topics');
+        });
     });
 };
