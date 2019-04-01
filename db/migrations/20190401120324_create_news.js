@@ -35,7 +35,7 @@ exports.up = function(connection, Promise) {
           .inTable('users');
         articlesTable.text('body');
         articlesTable.integer('votes');
-        articlesTable.bigInteger('created_at');
+        articlesTable.date('created_at');
       });
     })
     .then(() => {
@@ -52,7 +52,7 @@ exports.up = function(connection, Promise) {
           .references('title')
           .inTable('articles');
         commentsTable.integer('votes');
-        commentsTable.bigInteger('created_at');
+        commentsTable.date('created_at');
       });
     });
 };

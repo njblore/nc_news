@@ -1,4 +1,5 @@
 const { articleData, commentsData, usersData, topicsData } = require('../data');
+const { convertDate } = require('../../utils');
 
 exports.seed = (connection, Promise) => {
   return connection.migrate
@@ -13,11 +14,15 @@ exports.seed = (connection, Promise) => {
             .insert(topicsData)
             .into('topics')
             .then(() => {
+              let convertedArticleDate = convertDate(articleData);
               return connection
-                .insert(articleData)
+                .insert(convertedArticleDate)
                 .into('articles')
                 .then(() => {
-                  return connection.insert(commentsData).into('comments');
+                  let convertedCommentDate = convertDate(commentsData);
+                  return connection
+                    .insert(convertedCommentDate)
+                    .into('comments');
                 });
             });
         });

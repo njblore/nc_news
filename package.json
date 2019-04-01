@@ -11,7 +11,8 @@
     "test": "mocha ./spec/*.spec.js",
     "seed": "knex seed:run",
     "dev": "nodemon listen.js",
-    "start": "node listen.js"
+    "start": "node listen.js",
+    "util-test": "mocha ./utils/index.spec.js"
   },
   "author": "",
   "license": "ISC",
