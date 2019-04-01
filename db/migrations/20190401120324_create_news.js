@@ -33,14 +33,18 @@ exports.up = function(connection, Promise) {
           .foreign('author')
           .references('username')
           .inTable('users');
-        articlesTable.string('body');
+        articlesTable.text('body');
         articlesTable.integer('votes');
-        articlesTable.timestamp('created_at');
+        articlesTable.bigInteger('created_at');
       });
     });
 };
 
 exports.down = function(connection, Promise) {
   console.log('dropping users table...');
-  return connection.schema.dropTable('users');
+  return connection.schema.dropTable('articles').then(() => {
+    return connection.schema.dropTable('topics').then(() => {
+      return connection.schema.dropTable('users');
+    });
+  });
 };

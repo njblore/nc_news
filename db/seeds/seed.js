@@ -9,7 +9,12 @@ exports.seed = (connection, Promise) => {
         .insert(usersData)
         .into('users')
         .then(() => {
-          return connection.insert(topicsData).into('topics');
+          return connection
+            .insert(topicsData)
+            .into('topics')
+            .then(() => {
+              return connection.insert(articleData).into('articles');
+            });
         });
     });
 };
