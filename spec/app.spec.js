@@ -47,6 +47,14 @@ describe('/', () => {
             );
           });
       });
+      it('GET status: 200 adds a comment count key for each article object', () => {
+        return request
+          .get('/api/articles')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles[0]).to.contain.keys('comment_count');
+          });
+      });
     });
   });
 });
