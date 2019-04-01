@@ -1,5 +1,9 @@
+const { fetchArticles } = require('../models/articles');
+
 const sendArticles = (req, res, next) => {
-  res.status(200).send({ msg: 'ok' });
+  fetchArticles().then(articles => {
+    res.status(200).send({ articles });
+  });
 };
 
 module.exports = { sendArticles };

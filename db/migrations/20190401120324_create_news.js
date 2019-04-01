@@ -15,8 +15,8 @@ exports.up = function(connection, Promise) {
         topicsTable
           .string('slug')
           .notNullable()
-          .unique();
-        topicsTable.increments('topic_id').primary();
+          .unique()
+          .primary();
       });
     })
     .then(() => {

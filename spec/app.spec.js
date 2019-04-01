@@ -32,7 +32,20 @@ describe('/', () => {
     });
     describe('/api/articles', () => {
       it('GET status: 200 serves an array of article objects', () => {
-        return request.get('/api/articles').expect(200);
+        return request
+          .get('/api/articles')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.an('array');
+            expect(res.body.articles[0]).to.contain.keys(
+              'author',
+              'title',
+              'article_id',
+              'topic',
+              'created_at',
+              'votes',
+            );
+          });
       });
     });
   });
