@@ -2,10 +2,11 @@ const connection = require('../db/connection');
 
 const fetchArticles = () => {
   return connection
-    .select('*')
+    .select('articles.*')
+    .count({ comment_count: 'comment_id' })
     .from('articles')
-    .leftJoin('comments', 'comments.belongs_to', 'articles.title')
-    .count({ comment_count: 'comment_id' });
+    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+    .groupBy('articles.article_id');
 };
 
 module.exports = { fetchArticles };
