@@ -81,7 +81,7 @@ describe('/', () => {
           .get('/api/articles?topic=mitch')
           .expect(200)
           .then(res => {
-            expect(res.body.articles).to.be.ascendingBy('created_at');
+            expect(res.body.articles).to.be.descendingBy('created_at');
           });
       });
       it('GET status: 200 accepts query for sort order', () => {
@@ -89,7 +89,15 @@ describe('/', () => {
           .get('/api/articles?sort_by=author')
           .expect(200)
           .then(res => {
-            expect(res.body.articles).to.be.ascendingBy('author');
+            expect(res.body.articles).to.be.descendingBy('author');
+          });
+      });
+      it.only('GET status: 200 accepts query for sort direction', () => {
+        return request
+          .get('/api/articles?sort_by=title&&order=asc')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.ascendingBy('title');
           });
       });
     });

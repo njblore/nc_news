@@ -1,7 +1,7 @@
 const connection = require('../db/connection');
 
 const fetchArticles = query => {
-  const { author, topic, sort_by } = query;
+  const { author, topic, sort_by, order } = query;
 
   return connection
     .select('articles.*')
@@ -9,7 +9,7 @@ const fetchArticles = query => {
     .from('articles')
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .groupBy('articles.article_id')
-    .orderBy(sort_by || 'created_at')
+    .orderBy(sort_by || 'created_at', order || 'asc')
     .modify(articleQuery => {
       if (author) articleQuery.where({ author });
       if (topic) articleQuery.where({ topic });
