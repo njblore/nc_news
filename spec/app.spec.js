@@ -245,3 +245,46 @@ describe('/', () => {
     });
   });
 });
+
+describe('Error Handling', () => {
+  beforeEach(() => connection.seed.run());
+  after(() => connection.destroy());
+  describe('/notaroute', () => {
+    it('GET status: 404 and serves message route not found', () => {
+      return request
+        .get('/notaroute')
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.equal('Route Not Found');
+        });
+    });
+  });
+  describe('Method Not Allowed', () => {
+    it('POST/PUT/PATCH on routes where not allowed status: 405 and serves message method not allowed', () => {
+      return request
+        .post('/api/articles')
+        .expect(405)
+        .then(res => {
+          expect(res.body.msg).to.equal('Method Not Allowed');
+        });
+    });
+  });
+  describe('Bad queries', () => {
+    it('status 400 and serves message bad request for invalid column names', () => {
+      return request
+        .get('/api/articles?sort_by=lemondrops')
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.equal('Bad Request');
+        });
+    });
+    it.only('status 400 and serves message bad request for invalid article_id', () => {
+      return request
+        .get('/api/articles/blue')
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.equal('Bad Request');
+        });
+    });
+  });
+});
