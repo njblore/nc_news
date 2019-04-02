@@ -55,6 +55,26 @@ describe('/', () => {
             expect(res.body.articles[0]).to.contain.keys('comment_count');
           });
       });
+      it('GET status: 200 and accepts query for author', () => {
+        return request
+          .get('/api/articles?author=butter_bridge')
+          .expect(200)
+          .then(res => {
+            console.log(res.body.articles);
+            expect(res.body.articles).to.be.an('array');
+            expect(res.body.articles[0].author).to.equal('butter_bridge');
+          });
+      });
+      it.only('GET status: 200 and accepts query for topic', () => {
+        return request
+          .get('/api/articles?topic=cats')
+          .expect(200)
+          .then(res => {
+            console.log(res.body);
+            expect(res.body.articles[0].topic).to.equal('cats');
+            expect(res.body.articles[0].author).to.equal('rogersop');
+          });
+      });
     });
   });
 });
