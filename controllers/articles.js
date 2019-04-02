@@ -16,16 +16,14 @@ const sendArticles = (req, res, next) => {
 
 const sendSingleArticle = (req, res, next) => {
   fetchArticles(req.params)
-    .then(articles => {
-      article = articles[0];
+    .then(([article]) => {
       res.status(200).send({ article });
     })
     .catch(console.log);
 };
 
 const sendUpdatedArticle = (req, res, next) => {
-  updateArticleById(req).then(article => {
-    article = article[0];
+  updateArticleById(req).then(([article]) => {
     res.status(200).send({ article });
   });
 };
@@ -46,8 +44,7 @@ const sendCommentsByArticleId = (req, res, next) => {
 };
 
 const addCommentOnArticleId = (req, res, next) => {
-  postCommentByArticleId(req).then(comment => {
-    comment = comment[0];
+  postCommentByArticleId(req).then(([comment]) => {
     res.status(201).send({ comment });
   });
 };

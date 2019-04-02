@@ -61,7 +61,6 @@ describe('/', () => {
           .get('/api/articles?author=butter_bridge')
           .expect(200)
           .then(res => {
-            console.log(res.body.articles);
             expect(res.body.articles).to.be.an('array');
             expect(res.body.articles[0].author).to.equal('butter_bridge');
           });
@@ -71,7 +70,6 @@ describe('/', () => {
           .get('/api/articles?topic=cats')
           .expect(200)
           .then(res => {
-            console.log(res.body);
             expect(res.body.articles[0].topic).to.equal('cats');
             expect(res.body.articles[0].author).to.equal('rogersop');
           });
@@ -107,7 +105,6 @@ describe('/', () => {
           .get('/api/articles/1')
           .expect(200)
           .then(res => {
-            console.log(res.body);
             expect(res.body.article).to.contain.keys(
               'author',
               'title',
@@ -147,7 +144,6 @@ describe('/', () => {
           .get('/api/articles/1/comments')
           .expect(200)
           .then(res => {
-            console.log(res.body.comments[0]);
             expect(res.body.comments).to.be.an('array');
             expect(res.body.comments[0]).to.contain.keys(
               'comment_id',
@@ -168,18 +164,18 @@ describe('/', () => {
       });
       it('GET status: 200 accepts query for sort_by', () => {
         return request
-          .get('/api/articles/1/comments?sort_by=created_by')
+          .get('/api/articles/1/comments?sort_by=author')
           .expect(200)
           .then(res => {
-            expect(res.body.comments).to.be.descendingBy('created_by');
+            expect(res.body.comments).to.be.descendingBy('author');
           });
       });
       it('GET status: 200 accepts query for order asc or desc', () => {
         return request
-          .get('/api/articles/1/comments?sort_by=created_by&&order=asc')
+          .get('/api/articles/1/comments?sort_by=author&&order=asc')
           .expect(200)
           .then(res => {
-            expect(res.body.comments).to.be.ascendingBy('created_by');
+            expect(res.body.comments).to.be.ascendingBy('author');
           });
       });
       it('POST status: 201 posts comment to article at article-id', () => {
@@ -234,7 +230,7 @@ describe('/', () => {
       });
     });
     describe('/api/users/:username', () => {
-      it.only('GET status: 200 serves a user object', () => {
+      it('GET status: 200 serves a user object', () => {
         return request
           .get('/api/users/butter_bridge')
           .expect(200)
