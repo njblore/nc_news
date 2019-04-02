@@ -142,7 +142,7 @@ describe('/', () => {
       });
     });
     describe('/api/articles/:article_id/comments', () => {
-      it.only('GET status: 200 serves an array of comment objects for an article', () => {
+      it('GET status: 200 serves an array of comment objects for an article', () => {
         return request
           .get('/api/articles/1/comments')
           .expect(200)
@@ -155,6 +155,30 @@ describe('/', () => {
               'created_by',
               'body',
             );
+          });
+      });
+      it('GET status: 200 sort order default to created_at', () => {
+        return request
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(res => {
+            expect(res.body.comments).to.be.descendingBy('created_at');
+          });
+      });
+      it('GET status: 200 accepts query for sort_by', () => {
+        return request
+          .get('/api/articles/1/comments?sort_by=created_by')
+          .expect(200)
+          .then(res => {
+            expect(res.body.comments).to.be.descendingBy('created_by');
+          });
+      });
+      it.only('GET status: 200 accepts query for order asc or desc', () => {
+        return request
+          .get('/api/articles/1/comments?sort_by=created_by&&order=asc')
+          .expect(200)
+          .then(res => {
+            expect(res.body.comments).to.be.ascendingBy('created_by');
           });
       });
     });

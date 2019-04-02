@@ -44,12 +44,13 @@ const deleteArticleById = params => {
     .del();
 };
 
-const fetchCommentsByArticleId = params => {
-  const { article_id } = params;
+const fetchCommentsByArticleId = queriesAndParams => {
+  const { article_id, sort_by, order } = queriesAndParams;
   return connection
     .select('*')
     .from('comments')
-    .where('article_id', '=', article_id);
+    .where('article_id', '=', article_id)
+    .orderBy(sort_by || 'created_at', order || 'desc');
 };
 
 module.exports = {

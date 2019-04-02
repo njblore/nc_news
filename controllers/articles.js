@@ -38,7 +38,8 @@ const removeArticleById = (req, res, next) => {
 };
 
 const sendCommentsByArticleId = (req, res, next) => {
-  fetchCommentsByArticleId(req.params).then(comments => {
+  const queriesAndParams = { ...req.query, ...req.params };
+  fetchCommentsByArticleId(queriesAndParams).then(comments => {
     res.status(200).send({ comments });
   });
 };
