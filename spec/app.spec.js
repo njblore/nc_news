@@ -233,5 +233,19 @@ describe('/', () => {
           });
       });
     });
+    describe('/api/users/:username', () => {
+      it.only('GET status: 200 serves a user object', () => {
+        return request
+          .get('/api/users/butter_bridge')
+          .expect(200)
+          .then(res => {
+            expect(res.body.user).to.contain.keys(
+              'username',
+              'avatar_url',
+              'name',
+            );
+          });
+      });
+    });
   });
 });
