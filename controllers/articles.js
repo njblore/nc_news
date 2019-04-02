@@ -20,17 +20,24 @@ const sendSingleArticle = (req, res, next) => {
   }
   fetchArticles(req.params)
     .then(([article]) => {
+      if (article === undefined) {
+        next({ code: 404 });
+      }
       res.status(200).send({ article });
     })
     .catch(next);
 };
 
 const sendUpdatedArticle = (req, res, next) => {
-  updateArticleById(req)
-    .then(([article]) => {
-      res.status(200).send({ article });
-    })
-    .catch(next);
+  if (!req.body.inc_votes) {
+    next({ code: '42703' });
+  } else {
+    updateArticleById(req)
+      .then(([article]) => {
+        res.status(200).send({ article });
+      })
+      .catch(next);
+  }
 };
 
 const removeArticleById = (req, res, next) => {

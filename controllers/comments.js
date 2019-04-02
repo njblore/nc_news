@@ -1,11 +1,15 @@
 const { updateCommentById, deleteCommentById } = require('../models/comments');
 
 const sendUpdatedComment = (req, res, next) => {
-  updateCommentById(req)
-    .then(([comment]) => {
-      res.status(200).send({ comment });
-    })
-    .catch(console.log);
+  if (!req.body.inc_votes) {
+    next({ code: '42703' });
+  } else {
+    updateCommentById(req)
+      .then(([comment]) => {
+        res.status(200).send({ comment });
+      })
+      .catch(console.log);
+  }
 };
 
 const removeCommentById = (req, res, next) => {

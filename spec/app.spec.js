@@ -249,10 +249,26 @@ describe('/', () => {
 describe('Error Handling', () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
-  describe('/notaroute', () => {
-    it('GET status: 404 and serves message route not found', () => {
+  describe('Route Not Found', () => {
+    it('GET status: 404 and serves message route not found for invalid route', () => {
       return request
         .get('/notaroute')
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.equal('Route Not Found');
+        });
+    });
+    it('Status 404 and message Route not found for user not in db', () => {
+      return request
+        .get('/api/users/fatherchristmas')
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.equal('Route Not Found');
+        });
+    });
+    it('Status 404 and message Route not found for article_id not in db', () => {
+      return request
+        .get('/api/articles/290')
         .expect(404)
         .then(res => {
           expect(res.body.msg).to.equal('Route Not Found');
@@ -278,9 +294,18 @@ describe('Error Handling', () => {
           expect(res.body.msg).to.equal('Bad Request');
         });
     });
-    it.only('status 400 and serves message bad request for invalid article_id', () => {
+    it('status 400 and serves message bad request for invalid article_id', () => {
       return request
         .get('/api/articles/blue')
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.equal('Bad Request');
+        });
+    });
+    it.only('status 400 and serves message bad request for missing inc_votes on request body', () => {
+      return request
+        .patch('/api/comments/1')
+        .send({})
         .expect(400)
         .then(res => {
           expect(res.body.msg).to.equal('Bad Request');
