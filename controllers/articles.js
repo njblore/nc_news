@@ -8,4 +8,13 @@ const sendArticles = (req, res, next) => {
     .catch(console.log);
 };
 
-module.exports = { sendArticles };
+const sendSingleArticle = (req, res, next) => {
+  fetchArticles(req.params)
+    .then(articles => {
+      article = articles[0];
+      res.status(200).send({ article });
+    })
+    .catch(console.log);
+};
+
+module.exports = { sendArticles, sendSingleArticle };

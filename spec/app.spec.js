@@ -92,12 +92,32 @@ describe('/', () => {
             expect(res.body.articles).to.be.descendingBy('author');
           });
       });
-      it.only('GET status: 200 accepts query for sort direction', () => {
+      it('GET status: 200 accepts query for sort direction', () => {
         return request
           .get('/api/articles?sort_by=title&&order=asc')
           .expect(200)
           .then(res => {
             expect(res.body.articles).to.be.ascendingBy('title');
+          });
+      });
+    });
+    describe('/api/articles/:article_id', () => {
+      it.only('GET status: 200 serves a single article with given id', () => {
+        return request
+          .get('/api/articles/1')
+          .expect(200)
+          .then(res => {
+            console.log(res.body);
+            expect(res.body.article).to.contain.keys(
+              'author',
+              'title',
+              'article_id',
+              'body',
+              'topic',
+              'created_at',
+              'votes',
+              'comment_count',
+            );
           });
       });
     });
