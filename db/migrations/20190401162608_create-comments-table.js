@@ -7,14 +7,15 @@ exports.up = function(connection, Promise) {
       .references('username')
       .inTable('users');
     commentsTable.text('body');
-    commentsTable.string('belongs_to');
     commentsTable
-      .foreign('belongs_to')
-      .references('title')
+      .integer('article_id')
+      .references('article_id')
       .inTable('articles');
     commentsTable.integer('votes');
     commentsTable.date('created_at');
   });
 };
 
-exports.down = function(connection, Promise) {};
+exports.down = function(connection, Promise) {
+  return connection.schema.dropTable('comments');
+};

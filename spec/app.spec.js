@@ -12,7 +12,7 @@ describe('/', () => {
 
   describe('/api', () => {
     it('GET status:200', () => {
-      return request
+      return request(app)
         .get('/api')
         .expect(200)
         .then(({ body }) => {
@@ -21,7 +21,7 @@ describe('/', () => {
     });
     describe('/api/topics', () => {
       it('GET status:200 serves an array of topic objects', () => {
-        return request
+        return request(app)
           .get('/api/topics')
           .expect(200)
           .then(res => {
@@ -32,7 +32,7 @@ describe('/', () => {
     });
     describe('/api/articles', () => {
       it('GET status: 200 serves an array of article objects', () => {
-        return request
+        return request(app)
           .get('/api/articles')
           .expect(200)
           .then(res => {
@@ -48,7 +48,7 @@ describe('/', () => {
           });
       });
       it('GET status: 200 adds a comment count key for each article object', () => {
-        return request
+        return request(app)
           .get('/api/articles')
           .expect(200)
           .then(res => {

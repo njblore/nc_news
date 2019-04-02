@@ -4,9 +4,10 @@ exports.up = function(connection, Promise) {
     topicsTable
       .string('slug')
       .notNullable()
-      .unique()
       .primary();
   });
 };
 
-exports.down = function(connection, Promise) {};
+exports.down = function(connection, Promise) {
+  return connection.schema.dropTable('topics');
+};

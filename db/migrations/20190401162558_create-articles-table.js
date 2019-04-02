@@ -1,7 +1,7 @@
 exports.up = function(connection, Promise) {
   return connection.schema.createTable('articles', articlesTable => {
     articlesTable.increments('article_id').primary();
-    articlesTable.string('title').unique();
+    articlesTable.string('title');
     articlesTable.string('topic');
     articlesTable
       .foreign('topic')
@@ -18,4 +18,6 @@ exports.up = function(connection, Promise) {
   });
 };
 
-exports.down = function(connection, Promise) {};
+exports.down = function(connection, Promise) {
+  return connection.schema.dropTable('articles');
+};
