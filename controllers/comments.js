@@ -1,4 +1,4 @@
-const { updateCommentById } = require('../models/comments');
+const { updateCommentById, deleteCommentById } = require('../models/comments');
 
 const sendUpdatedComment = (req, res, next) => {
   updateCommentById(req)
@@ -9,4 +9,12 @@ const sendUpdatedComment = (req, res, next) => {
     .catch(console.log);
 };
 
-module.exports = { sendUpdatedComment };
+const removeCommentById = (req, res, next) => {
+  deleteCommentById(req.params).then(() => {
+    res.status(200).send({
+      msg: `Comment with id ${req.params.comment_id} has been removed.`,
+    });
+  });
+};
+
+module.exports = { sendUpdatedComment, removeCommentById };

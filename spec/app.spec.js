@@ -206,21 +206,31 @@ describe('/', () => {
       });
     });
     describe('/api/comments/:comment_id', () => {
-      it.only('PATCH status: 200 serves a comment updated with new votes', () => {
+      it('PATCH status: 200 serves a comment updated with new votes', () => {
         return request
           .patch('/api/comments/5')
-          .send({ inc_votes: -10 })
-          .expect(200);
-        // .then(res => {
-        //   expect(res.body.comment).to.contain.keys(
-        //     'comment_id',
-        //     'votes',
-        //     'created_at',
-        //     'author',
-        //     'body',
-        //   );
-        //   expect(res.body.comment.votes).to.equal(-15);
-        // });
+          .send({ inc_votes: 10 })
+          .expect(200)
+          .then(res => {
+            expect(res.body.comment).to.contain.keys(
+              'comment_id',
+              'votes',
+              'created_at',
+              'created_by',
+              'body',
+            );
+            expect(res.body.comment.votes).to.equal(10);
+          });
+      });
+      it('DELETE status: 200 returns confirmation of removed comment', () => {
+        return request
+          .delete('/api/comments/2')
+          .expect(200)
+          .then(res => {
+            expect(res.body.msg).to.equal(
+              'Comment with id 2 has been removed.',
+            );
+          });
       });
     });
   });

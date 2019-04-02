@@ -10,7 +10,6 @@ const updateCommentById = req => {
     .where('comment_id', '=', comment_id)
     .then(votes => {
       let currentVotes = votes[0].votes;
-
       return connection
         .select('*')
         .from('comments')
@@ -20,4 +19,11 @@ const updateCommentById = req => {
     });
 };
 
-module.exports = { updateCommentById };
+const deleteCommentById = params => {
+  const { comment_id } = params;
+  return connection('comments')
+    .where('comment_id', '=', comment_id)
+    .del();
+};
+
+module.exports = { updateCommentById, deleteCommentById };
