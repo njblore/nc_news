@@ -1,6 +1,7 @@
 process.env.NODE_ENV = 'test';
-
-const { expect } = require('chai');
+const chai = require('chai');
+const { expect } = chai;
+chai.use(require('chai-sorted'));
 const supertest = require('supertest');
 const app = require('../app');
 const connection = require('../db/connection');
@@ -65,7 +66,7 @@ describe('/', () => {
             expect(res.body.articles[0].author).to.equal('butter_bridge');
           });
       });
-      it.only('GET status: 200 and accepts query for topic', () => {
+      it('GET status: 200 and accepts query for topic', () => {
         return request
           .get('/api/articles?topic=cats')
           .expect(200)
@@ -73,6 +74,22 @@ describe('/', () => {
             console.log(res.body);
             expect(res.body.articles[0].topic).to.equal('cats');
             expect(res.body.articles[0].author).to.equal('rogersop');
+          });
+      });
+      it('GET status: 200 default sort order by date', () => {
+        return request
+          .get('/api/articles?topic=mitch')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.ascendingBy('created_at');
+          });
+      });
+      it('GET status: 200 accepts query for sort order', () => {
+        return request
+          .get('/api/articles?sort_by=author')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.ascendingBy('author');
           });
       });
     });

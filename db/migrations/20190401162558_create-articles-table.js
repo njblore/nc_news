@@ -13,7 +13,7 @@ exports.up = function(connection, Promise) {
       .references('username')
       .inTable('users');
     articlesTable.text('body');
-    articlesTable.integer('votes');
+    articlesTable.integer('votes').defaultTo(0);
     articlesTable.date('created_at');
   });
 };
