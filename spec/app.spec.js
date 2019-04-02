@@ -302,10 +302,37 @@ describe('Error Handling', () => {
           expect(res.body.msg).to.equal('Bad Request');
         });
     });
-    it.only('status 400 and serves message bad request for missing inc_votes on request body', () => {
+    it('status 400 and serves message bad request for missing inc_votes on request body', () => {
       return request
         .patch('/api/comments/1')
         .send({})
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.equal('Bad Request');
+        });
+    });
+    it('status 400 and serves message bad request for invalid inc_votes on comments request body', () => {
+      return request
+        .patch('/api/comments/1')
+        .send({ inc_votes: 'shovel' })
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.equal('Bad Request');
+        });
+    });
+    it('status 400 and serves message bad request for invalid inc_votes on articles request body', () => {
+      return request
+        .patch('/api/articles/1')
+        .send({ inc_votes: 'shovel' })
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.equal('Bad Request');
+        });
+    });
+    it('status 400 and serves message bad request for extraneous items on request body', () => {
+      return request
+        .patch('/api/articles/1')
+        .send({ inc_votes: 1, name: 'Excalibur' })
         .expect(400)
         .then(res => {
           expect(res.body.msg).to.equal('Bad Request');

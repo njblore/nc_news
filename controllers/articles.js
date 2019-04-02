@@ -31,6 +31,8 @@ const sendSingleArticle = (req, res, next) => {
 const sendUpdatedArticle = (req, res, next) => {
   if (!req.body.inc_votes) {
     next({ code: '42703' });
+  } else if (Object.keys(req.body) !== ['inc_votes']) {
+    next({ code: '42703' });
   } else {
     updateArticleById(req)
       .then(([article]) => {
