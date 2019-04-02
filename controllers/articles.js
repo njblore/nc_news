@@ -1,4 +1,9 @@
-const { fetchArticles, updateArticleById } = require('../models/articles');
+const {
+  fetchArticles,
+  updateArticleById,
+  deleteArticleById,
+  fetchCommentsByArticleId,
+} = require('../models/articles');
 
 const sendArticles = (req, res, next) => {
   fetchArticles(req.query)
@@ -24,4 +29,24 @@ const sendUpdatedArticle = (req, res, next) => {
   });
 };
 
-module.exports = { sendArticles, sendSingleArticle, sendUpdatedArticle };
+const removeArticleById = (req, res, next) => {
+  deleteArticleById(req.params).then(() => {
+    res.status(200).send({
+      msg: `Article with id ${req.params.article_id} has been deleted.`,
+    });
+  });
+};
+
+const sendCommentsByArticleId = (req, res, next) => {
+  fetchCommentsByArticleId(req.params).then(comments => {
+    res.status(200).send({ comments });
+  });
+};
+
+module.exports = {
+  sendArticles,
+  sendSingleArticle,
+  sendUpdatedArticle,
+  removeArticleById,
+  sendCommentsByArticleId,
+};

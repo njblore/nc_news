@@ -129,8 +129,33 @@ describe('/', () => {
             expect(res.body.article.votes).to.equal(10);
           });
       });
-      it.only('DELETE status: 204 deletes article with given id and responds with no content', () => {
-        return request.delete('/api/articles/3').expect(204);
+      it('DELETE status: 204 deletes article with given id and responds with no content', () => {
+        return request
+          .delete('/api/articles/3')
+          .expect(200)
+          .then(res => {
+            console.log(res.body);
+            expect(res.body.msg).to.equal(
+              'Article with id 3 has been deleted.',
+            );
+          });
+      });
+    });
+    describe('/api/articles/:article_id/comments', () => {
+      it.only('GET status: 200 serves an array of comment objects for an article', () => {
+        return request
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(res => {
+            expect(res.body.comments).to.be.an('array');
+            expect(res.body.comments[0]).to.contain.keys(
+              'comment_id',
+              'votes',
+              'created_at',
+              'created_by',
+              'body',
+            );
+          });
       });
     });
   });

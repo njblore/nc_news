@@ -37,4 +37,24 @@ const updateArticleById = req => {
     });
 };
 
-module.exports = { fetchArticles, updateArticleById };
+const deleteArticleById = params => {
+  const { article_id } = params;
+  return connection('articles')
+    .where('article_id', '=', article_id)
+    .del();
+};
+
+const fetchCommentsByArticleId = params => {
+  const { article_id } = params;
+  return connection
+    .select('*')
+    .from('comments')
+    .where('article_id', '=', article_id);
+};
+
+module.exports = {
+  fetchArticles,
+  updateArticleById,
+  deleteArticleById,
+  fetchCommentsByArticleId,
+};
