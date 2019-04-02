@@ -182,7 +182,7 @@ describe('/', () => {
             expect(res.body.comments).to.be.ascendingBy('created_by');
           });
       });
-      it.only('POST status: 201 posts comment to article at article-id', () => {
+      it('POST status: 201 posts comment to article at article-id', () => {
         return request
           .post('/api/articles/1/comments')
           .send({
@@ -203,6 +203,24 @@ describe('/', () => {
               'This article is a steaming heap of mashed potatoes.',
             );
           });
+      });
+    });
+    describe('/api/comments/:comment_id', () => {
+      it.only('PATCH status: 200 serves a comment updated with new votes', () => {
+        return request
+          .patch('/api/comments/5')
+          .send({ inc_votes: -10 })
+          .expect(200);
+        // .then(res => {
+        //   expect(res.body.comment).to.contain.keys(
+        //     'comment_id',
+        //     'votes',
+        //     'created_at',
+        //     'author',
+        //     'body',
+        //   );
+        //   expect(res.body.comment.votes).to.equal(-15);
+        // });
       });
     });
   });
