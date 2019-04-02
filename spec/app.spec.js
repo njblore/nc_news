@@ -102,7 +102,7 @@ describe('/', () => {
       });
     });
     describe('/api/articles/:article_id', () => {
-      it.only('GET status: 200 serves a single article with given id', () => {
+      it('GET status: 200 serves a single article with given id', () => {
         return request
           .get('/api/articles/1')
           .expect(200)
@@ -119,6 +119,18 @@ describe('/', () => {
               'comment_count',
             );
           });
+      });
+      it('PATCH status: 200 accepts inc_votes object and adds votes to an article, returns the amended object', () => {
+        return request
+          .patch('/api/articles/2')
+          .send({ inc_votes: 10 })
+          .expect(200)
+          .then(res => {
+            expect(res.body.article.votes).to.equal(10);
+          });
+      });
+      it.only('DELETE status: 204 deletes article with given id and responds with no content', () => {
+        return request.delete('/api/articles/3').expect(204);
       });
     });
   });

@@ -18,4 +18,23 @@ const fetchArticles = query => {
     });
 };
 
-module.exports = { fetchArticles };
+const updateArticleById = req => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+
+  return connection
+    .select('votes')
+    .from('articles')
+    .where('article_id', '=', article_id)
+    .then(votes => {
+      let currentVotes = votes[0].votes;
+      return connection
+        .select('*')
+        .from('articles')
+        .update('votes', inc_votes + currentVotes)
+        .where('article_id', '=', article_id)
+        .returning('*');
+    });
+};
+
+module.exports = { fetchArticles, updateArticleById };

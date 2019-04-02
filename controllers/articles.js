@@ -1,4 +1,4 @@
-const { fetchArticles } = require('../models/articles');
+const { fetchArticles, updateArticleById } = require('../models/articles');
 
 const sendArticles = (req, res, next) => {
   fetchArticles(req.query)
@@ -17,4 +17,11 @@ const sendSingleArticle = (req, res, next) => {
     .catch(console.log);
 };
 
-module.exports = { sendArticles, sendSingleArticle };
+const sendUpdatedArticle = (req, res, next) => {
+  updateArticleById(req).then(article => {
+    article = article[0];
+    res.status(200).send({ article });
+  });
+};
+
+module.exports = { sendArticles, sendSingleArticle, sendUpdatedArticle };
