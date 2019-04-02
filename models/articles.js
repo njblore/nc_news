@@ -47,10 +47,30 @@ const deleteArticleById = params => {
 const fetchCommentsByArticleId = queriesAndParams => {
   const { article_id, sort_by, order } = queriesAndParams;
   return connection
-    .select('*')
+    .select('comment_id', 'votes', 'created_at', 'body', 'username as author')
     .from('comments')
+    .leftJoin('users', 'users.username', 'comments.created_by')
     .where('article_id', '=', article_id)
     .orderBy(sort_by || 'created_at', order || 'desc');
+};
+
+const postCommentByArticleId = req => {
+  const { article_id } = req.params;
+  const { body, username } = req.body;
+  const created_at = new Date();
+
+  const commentObject = {
+    body: body,
+    article_id: article_id,
+    created_by: username,
+    votes: 0,
+    created_at: created_at.toISOString(),
+  };
+
+  return connection
+    .insert(commentObject)
+    .into('comments')
+    .returning('*');
 };
 
 module.exports = {
@@ -58,4 +78,5 @@ module.exports = {
   updateArticleById,
   deleteArticleById,
   fetchCommentsByArticleId,
+  postCommentByArticleId,
 };

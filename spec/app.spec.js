@@ -147,12 +147,13 @@ describe('/', () => {
           .get('/api/articles/1/comments')
           .expect(200)
           .then(res => {
+            console.log(res.body.comments[0]);
             expect(res.body.comments).to.be.an('array');
             expect(res.body.comments[0]).to.contain.keys(
               'comment_id',
               'votes',
               'created_at',
-              'created_by',
+              'author',
               'body',
             );
           });
@@ -173,12 +174,34 @@ describe('/', () => {
             expect(res.body.comments).to.be.descendingBy('created_by');
           });
       });
-      it.only('GET status: 200 accepts query for order asc or desc', () => {
+      it('GET status: 200 accepts query for order asc or desc', () => {
         return request
           .get('/api/articles/1/comments?sort_by=created_by&&order=asc')
           .expect(200)
           .then(res => {
             expect(res.body.comments).to.be.ascendingBy('created_by');
+          });
+      });
+      it.only('POST status: 201 posts comment to article at article-id', () => {
+        return request
+          .post('/api/articles/1/comments')
+          .send({
+            username: 'icellusedkars',
+            body: 'This article is a steaming heap of mashed potatoes.',
+          })
+          .expect(201)
+          .then(res => {
+            expect(res.body.comment).to.contain.keys(
+              'comment_id',
+              'created_at',
+              'created_by',
+              'body',
+              'article_id',
+              'votes',
+            );
+            expect(res.body.comment.body).to.equal(
+              'This article is a steaming heap of mashed potatoes.',
+            );
           });
       });
     });

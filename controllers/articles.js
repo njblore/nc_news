@@ -3,6 +3,7 @@ const {
   updateArticleById,
   deleteArticleById,
   fetchCommentsByArticleId,
+  postCommentByArticleId,
 } = require('../models/articles');
 
 const sendArticles = (req, res, next) => {
@@ -44,10 +45,18 @@ const sendCommentsByArticleId = (req, res, next) => {
   });
 };
 
+const addCommentOnArticleId = (req, res, next) => {
+  postCommentByArticleId(req).then(comment => {
+    comment = comment[0];
+    res.status(201).send({ comment });
+  });
+};
+
 module.exports = {
   sendArticles,
   sendSingleArticle,
   sendUpdatedArticle,
   removeArticleById,
   sendCommentsByArticleId,
+  addCommentOnArticleId,
 };
