@@ -9,28 +9,36 @@ const { fetchTopics } = require('../models/topics');
 const { fetchUserById } = require('../models/users');
 
 const sendArticles = (req, res, next) => {
-  Promise.all([fetchTopics(), fetchArticles(req.query)])
-    .then(([topics, articles]) => {
-      if (
-        req.query.topic &&
-        !topics.map(topic => topic.slug).includes(req.query.topic)
-      ) {
-        next({ status: 404, msg: 'Topic Not Found' });
-      } else {
-        if (req.query.author) {
-          fetchUserById({ username: req.query.author }).then(author => {
-            if (author.length === 0) {
-              next({ status: 404, msg: 'Author Not Found' });
-            } else {
-              res.status(200).send({ articles });
-            }
-          });
+  if (
+    req.query.order &&
+    req.query.order !== 'asc' &&
+    req.query.order !== 'desc'
+  ) {
+    next({ status: 400, msg: 'Bad Request' });
+  } else {
+    Promise.all([fetchTopics(), fetchArticles(req.query)])
+      .then(([topics, articles]) => {
+        if (
+          req.query.topic &&
+          !topics.map(topic => topic.slug).includes(req.query.topic)
+        ) {
+          next({ status: 404, msg: 'Topic Not Found' });
         } else {
-          res.status(200).send({ articles });
+          if (req.query.author) {
+            fetchUserById({ username: req.query.author }).then(author => {
+              if (author.length === 0) {
+                next({ status: 404, msg: 'Author Not Found' });
+              } else {
+                res.status(200).send({ articles });
+              }
+            });
+          } else {
+            res.status(200).send({ articles });
+          }
         }
-      }
-    })
-    .catch(next);
+      })
+      .catch(next);
+  }
 };
 
 const sendSingleArticle = (req, res, next) => {

@@ -2,7 +2,6 @@ const connection = require('../db/connection');
 
 const fetchArticles = query => {
   const { author, topic, sort_by, order, article_id } = query;
-
   return connection
     .select('articles.*')
     .count({ comment_count: 'comment_id' })
