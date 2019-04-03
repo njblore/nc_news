@@ -55,7 +55,11 @@ const sendSingleArticle = (req, res, next) => {
 const sendUpdatedArticle = (req, res, next) => {
   updateArticleById(req)
     .then(([article]) => {
-      res.status(200).send({ article });
+      if (!article) {
+        next({ status: 404, msg: 'Article Not Found' });
+      } else {
+        res.status(200).send({ article });
+      }
     })
     .catch(next);
 };

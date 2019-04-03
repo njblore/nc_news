@@ -10,16 +10,15 @@ const request = supertest(app);
 describe('/', () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
-
+  it('GET status: 404 and serves message route not found for invalid route', () => {
+    return request
+      .get('/notaroute')
+      .expect(404)
+      .then(res => {
+        expect(res.body.msg).to.equal('Route Not Found');
+      });
+  });
   describe('/api', () => {
-    it('GET status: 404 and serves message route not found for invalid route', () => {
-      return request
-        .get('/notaroute')
-        .expect(404)
-        .then(res => {
-          expect(res.body.msg).to.equal('Route Not Found');
-        });
-    });
     it('GET status:200', () => {
       return request
         .get('/api')
@@ -216,7 +215,7 @@ describe('/', () => {
             expect(res.body.article.votes).to.equal(1);
           });
       });
-      it('INVALID VOTES status: 400 when there are invalid inc_votes value on the body', () => {
+      it('PATCH INVALID VOTES status: 400 when there are invalid inc_votes value on the body', () => {
         return request
           .patch('/api/articles/1')
           .send({ inc_votes: 'turtle' })
@@ -251,12 +250,38 @@ describe('/', () => {
             );
           });
       });
-      it('ARTICLE ID NOT FOUND Status: 404 ', () => {
+      it('GET ARTICLE ID NOT FOUND Status: 404 ', () => {
         return request
           .get('/api/articles/290')
           .expect(404)
           .then(res => {
             expect(res.body.msg).to.equal('Article Not Found');
+          });
+      });
+      it('GET INVALID ID status: 400', () => {
+        return request
+          .get('/api/articles/blue')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
+      it('PATCH ARTICLE ID NOT FOUND status: 404', () => {
+        return request
+          .patch('/api/articles/300')
+          .send({ inc_votes: 10 })
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal('Article Not Found');
+          });
+      });
+      it('PATCH ARTICLE INVALID ID status: 400', () => {
+        return request
+          .patch('/api/articles/articuno')
+          .send({ inc_votes: 10 })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
           });
       });
       it('PUT/POST status: 405 and serves message method not allowed', () => {
@@ -265,14 +290,6 @@ describe('/', () => {
           .expect(405)
           .then(res => {
             expect(res.body.msg).to.equal('Method Not Allowed');
-          });
-      });
-      it('INVALID ID status: 400', () => {
-        return request
-          .get('/api/articles/blue')
-          .expect(400)
-          .then(res => {
-            expect(res.body.msg).to.equal('Bad Request');
           });
       });
     });

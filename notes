@@ -9,15 +9,14 @@ error handling
 
 X get /asdsa :404
 X get topics?query :200/500
-X sort_by col doesnt exist :400/200 [articles, comments] -> send({msg: err.error})
+X sort_by col doesnt exist :400/200 -> send({msg: err.error})
 X order !== asc/desc :400/200 [articles, articles/id/comments]
-X author/topic doesnt exist :404 [~, ~, ~]
+X author/topic doesnt exist :404
 X author/topic exists but nothing associated with it :200 and empty array [~,~]
-X bad id eg str instead of num :400 [~, ~, ~]
-
-X no inc_votes on body :200 give unchanged back [~, ~]
-X invalid inc_votes :400 [comments/comment_id, articles/article_id]
-X something else on body :200/400 [comments/comment_id, articles/article_id]
+X bad id eg str instead of num :400
+X no inc_votes on body :200 give unchanged back
+X invalid inc_votes :400 
+X something else on body :200/400 
 
 
 
