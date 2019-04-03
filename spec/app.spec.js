@@ -56,7 +56,7 @@ describe('/', () => {
           });
       });
     });
-    describe('/api/articles', () => {
+    describe.only('/api/articles', () => {
       it('GET status: 200 serves an array of article objects', () => {
         return request
           .get('/api/articles')
@@ -155,14 +155,22 @@ describe('/', () => {
             expect(res.body.articles).to.be.ascendingBy('title');
           });
       });
-      it('INVALID SORT BY status: 400', () => {
-        return request
-          .get('/api/articles/sort_by=telemetry')
-          .expect(400)
-          .then(res => {
-            expect(res.body.msg).to.equal('Bad Request');
-          });
-      });
+      // it('INVALID SORT BY status: 400', () => {
+      //   return request
+      //     .get('/api/articles/sort_by=telemetry')
+      //     .expect(400)
+      //     .then(res => {
+      //       expect(res.body.msg).to.equal('Bad Request');
+      //     });
+      // });
+      // it('INVALID ORDER for sorting status: 400', () => {
+      //   return request
+      //     .get('/api/articles?order=tobasco')
+      //     .expect(400)
+      //     .then(res => {
+      //       expect(res.body.msg).to.equal('Bad Request');
+      //     });
+      // });
       it('POST/PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
         return request
           .post('/api/articles')
@@ -312,6 +320,14 @@ describe('/', () => {
       it('INVALID SORT BY status: 400', () => {
         return request
           .get('/api/articles/3/comments?sort_by=france')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
+      it('INVALID ORDER for sorting status: 400', () => {
+        return request
+          .get('/api/articles/1/comments?order=fishfingers')
           .expect(400)
           .then(res => {
             expect(res.body.msg).to.equal('Bad Request');

@@ -9,25 +9,25 @@ const { fetchTopics } = require('../models/topics');
 const { fetchUserById } = require('../models/users');
 
 const sendArticles = (req, res, next) => {
-  const username = req.query.author;
-
-  Promise.all([
-    fetchTopics(),
-    fetchUserById({ username }),
-    fetchArticles(req.query),
-  ])
-    .then(([topics, author, articles]) => {
+  Promise.all([fetchTopics(), fetchArticles(req.query)])
+    .then(([topics, articles]) => {
       if (
         req.query.topic &&
         !topics.map(topic => topic.slug).includes(req.query.topic)
       ) {
         next({ status: 404, msg: 'Topic Not Found' });
-      } else if (req.query.author) {
-        if (author.length === 0) {
-          next({ status: 404, msg: 'Author Not Found' });
-        }
       } else {
-        res.status(200).send({ articles });
+        if (req.query.author) {
+          fetchUserById({ username: req.query.author }).then(author => {
+            if (author.length === 0) {
+              next({ status: 404, msg: 'Author Not Found' });
+            } else {
+              res.status(200).send({ articles });
+            }
+          });
+        } else {
+          res.status(200).send({ articles });
+        }
       }
     })
     .catch(next);
@@ -69,6 +69,7 @@ const sendCommentsByArticleId = (req, res, next) => {
     fetchCommentsByArticleId(queriesAndParams),
   ])
     .then(([article, comments]) => {
+      console.log(comments);
       if (article.length === 0) {
         next({ status: 404, msg: 'Article Not Found' });
       } else {
