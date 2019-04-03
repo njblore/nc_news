@@ -23,8 +23,14 @@ describe('/', () => {
       return request
         .get('/api')
         .expect(200)
-        .then(({ body }) => {
-          expect(body.ok).to.equal(true);
+        .then(res => {
+          expect(res.body.endpoints).to.contain.keys(
+            '/api/topics',
+            '/api/articles',
+            '/api/articles/article_id/comments',
+            '/api.articles/comments/:comment_id',
+            '/api/users/:username',
+          );
         });
     });
     describe('/api/topics', () => {
@@ -537,7 +543,7 @@ describe('/', () => {
             );
           });
       });
-      it('Status 404 and message Route not found for user not in db', () => {
+      it('GET Status 404 and message Route not found for user not in db', () => {
         return request
           .get('/api/users/fatherchristmas')
           .expect(404)
