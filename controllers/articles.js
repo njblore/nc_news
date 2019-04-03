@@ -5,23 +5,28 @@ const {
   fetchCommentsByArticleId,
   postCommentByArticleId,
 } = require('../models/articles');
+const { fetchTopics } = require('../models/topics');
 
 const sendArticles = (req, res, next) => {
-  fetchArticles(req.query)
-    .then(articles => {
-      res.status(200).send({ articles });
+  Promise.all([fetchTopics(), fetchArticles(req.query)])
+    .then(([topics, articles]) => {
+      if (
+        req.query.topic &&
+        !topics.map(topic => topic.slug).includes(req.query.topic)
+      ) {
+        next({ status: 404, msg: 'Route Not Found' });
+      } else {
+        res.status(200).send({ articles });
+      }
     })
     .catch(next);
 };
 
 const sendSingleArticle = (req, res, next) => {
-  if (isNaN(parseInt(req.params.article_id))) {
-    next({ code: '42703' });
-  }
   fetchArticles(req.params)
     .then(([article]) => {
-      if (article === undefined) {
-        next({ code: 404 });
+      if (!article) {
+        next({ status: 404, msg: 'Article Not Found' });
       }
       res.status(200).send({ article });
     })
@@ -29,17 +34,11 @@ const sendSingleArticle = (req, res, next) => {
 };
 
 const sendUpdatedArticle = (req, res, next) => {
-  if (!req.body.inc_votes) {
-    next({ code: '42703' });
-  } else if (Object.keys(req.body) !== ['inc_votes']) {
-    next({ code: '42703' });
-  } else {
-    updateArticleById(req)
-      .then(([article]) => {
-        res.status(200).send({ article });
-      })
-      .catch(next);
-  }
+  updateArticleById(req)
+    .then(([article]) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
 };
 
 const removeArticleById = (req, res, next) => {
@@ -54,9 +53,16 @@ const removeArticleById = (req, res, next) => {
 
 const sendCommentsByArticleId = (req, res, next) => {
   const queriesAndParams = { ...req.query, ...req.params };
-  fetchCommentsByArticleId(queriesAndParams)
-    .then(comments => {
-      res.status(200).send({ comments });
+  Promise.all([
+    fetchArticles(queriesAndParams),
+    fetchCommentsByArticleId(queriesAndParams),
+  ])
+    .then(([article, comments]) => {
+      if (article.length === 0) {
+        next({ status: 404, msg: 'Article Not Found' });
+      } else {
+        res.status(200).send({ comments });
+      }
     })
     .catch(next);
 };

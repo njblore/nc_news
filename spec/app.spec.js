@@ -12,6 +12,14 @@ describe('/', () => {
   after(() => connection.destroy());
 
   describe('/api', () => {
+    it('GET status: 404 and serves message route not found for invalid route', () => {
+      return request
+        .get('/notaroute')
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.equal('Route Not Found');
+        });
+    });
     it('GET status:200', () => {
       return request
         .get('/api')
@@ -28,6 +36,14 @@ describe('/', () => {
           .then(res => {
             expect(res.body.topics).to.be.an('array');
             expect(res.body.topics[0]).to.contain.keys('slug', 'description');
+          });
+      });
+      it('POST/PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
+        return request
+          .post('/api/topics')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
     });
@@ -65,6 +81,14 @@ describe('/', () => {
             expect(res.body.articles[0].author).to.equal('butter_bridge');
           });
       });
+      it('GET status 200 and serves empty array for author in db with no content', () => {
+        return request
+          .get('/api/articles?author=pinkelephant')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.eql([]);
+          });
+      });
       it('GET status: 200 and accepts query for topic', () => {
         return request
           .get('/api/articles?topic=cats')
@@ -72,6 +96,22 @@ describe('/', () => {
           .then(res => {
             expect(res.body.articles[0].topic).to.equal('cats');
             expect(res.body.articles[0].author).to.equal('rogersop');
+          });
+      });
+      it('GET status 404 for topic not in db', () => {
+        return request
+          .get('/api/articles?topic=mushrooms')
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.eql('Route Not Found');
+          });
+      });
+      it('GET status 200 and serves empty array for topic in db with no content', () => {
+        return request
+          .get('/api/articles?topic=homeopathy')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.eql([]);
           });
       });
       it('GET status: 200 default sort order by date', () => {
@@ -96,6 +136,14 @@ describe('/', () => {
           .expect(200)
           .then(res => {
             expect(res.body.articles).to.be.ascendingBy('title');
+          });
+      });
+      it('POST/PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
+        return request
+          .post('/api/articles')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
     });
@@ -126,6 +174,40 @@ describe('/', () => {
             expect(res.body.article.votes).to.equal(10);
           });
       });
+      it('PATCH status: 200 when there are no inc_votes on the body', () => {
+        return request
+          .patch('/api/articles/3')
+          .send({})
+          .expect(200)
+          .then(res => {
+            expect(res.body.article.votes).to.equal(1);
+          });
+      });
+      it('INVALID VOTES status: 400 when there are invalid inc_votes value on the body', () => {
+        return request
+          .patch('/api/articles/1')
+          .send({ inc_votes: 'turtle' })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
+      it('PATCH EXTRA CONTENT status: 200', () => {
+        return request
+          .patch('/api/articles/2')
+          .send({ inc_votes: 1, tortellini: true })
+          .expect(200)
+          .then(res => {
+            expect(res.body.article).to.contain.keys(
+              'votes',
+              'article_id',
+              'topic',
+              'author',
+              'body',
+              'created_at',
+            );
+          });
+      });
       it('DELETE status: 204 deletes article with given id and responds with no content', () => {
         return request
           .delete('/api/articles/3')
@@ -135,6 +217,30 @@ describe('/', () => {
             expect(res.body.msg).to.equal(
               'Article with id 3 has been deleted.',
             );
+          });
+      });
+      it('ARTICLE ID NOT FOUND Status: 404 ', () => {
+        return request
+          .get('/api/articles/290')
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal('Article Not Found');
+          });
+      });
+      it('PUT/POST status: 405 and serves message method not allowed', () => {
+        return request
+          .post('/api/articles/1')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('INVALID ID status: 400', () => {
+        return request
+          .get('/api/articles/blue')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
           });
       });
     });
@@ -200,6 +306,30 @@ describe('/', () => {
             );
           });
       });
+      it('INVALID ID status: 404', () => {
+        return request
+          .get('/api/articles/666/comments')
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal('Article Not Found');
+          });
+      });
+      it('PUT/DELETE status: 405 and serves message method not allowed', () => {
+        return request
+          .delete('/api/articles/1/comments')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('INVALID ID status: 400 for invalid article_id', () => {
+        return request
+          .get('/api/articles/flamingos/comments')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
     });
     describe('/api/comments/:comment_id', () => {
       it('PATCH status: 200 serves a comment updated with new votes', () => {
@@ -218,6 +348,40 @@ describe('/', () => {
             expect(res.body.comment.votes).to.equal(10);
           });
       });
+      it('PATCH status: 200 when there are no inc_votes on the body', () => {
+        return request
+          .patch('/api/comments/3')
+          .send({})
+          .expect(200)
+          .then(res => {
+            expect(res.body.comment.votes).to.equal(101);
+          });
+      });
+      it('INVALID VOTES status: 400 when there are no inc_votes on the body', () => {
+        return request
+          .patch('/api/comments/3')
+          .send({ inc_votes: 'banana' })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
+      it('PATCH EXTRA CONTENT status: 200', () => {
+        return request
+          .patch('/api/comments/5')
+          .send({ inc_votes: 10, send_in_clowns: false })
+          .expect(200)
+          .then(res => {
+            expect(res.body.comment).to.contain.keys(
+              'comment_id',
+              'created_by',
+              'body',
+              'article_id',
+              'votes',
+              'created_at',
+            );
+          });
+      });
       it('DELETE status: 200 returns confirmation of removed comment', () => {
         return request
           .delete('/api/comments/2')
@@ -226,6 +390,23 @@ describe('/', () => {
             expect(res.body.msg).to.equal(
               'Comment with id 2 has been removed.',
             );
+          });
+      });
+      it('POST/PUT status: 405 and serves message method not allowed', () => {
+        return request
+          .post('/api/comments/1')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('INVALID ID status: 400', () => {
+        return request
+          .patch('/api/comments/pigeon')
+          .send({ inc_votes: 10 })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
           });
       });
     });
@@ -242,101 +423,22 @@ describe('/', () => {
             );
           });
       });
-    });
-  });
-});
-
-describe('Error Handling', () => {
-  beforeEach(() => connection.seed.run());
-  after(() => connection.destroy());
-  describe('Route Not Found', () => {
-    it('GET status: 404 and serves message route not found for invalid route', () => {
-      return request
-        .get('/notaroute')
-        .expect(404)
-        .then(res => {
-          expect(res.body.msg).to.equal('Route Not Found');
-        });
-    });
-    it('Status 404 and message Route not found for user not in db', () => {
-      return request
-        .get('/api/users/fatherchristmas')
-        .expect(404)
-        .then(res => {
-          expect(res.body.msg).to.equal('Route Not Found');
-        });
-    });
-    it('Status 404 and message Route not found for article_id not in db', () => {
-      return request
-        .get('/api/articles/290')
-        .expect(404)
-        .then(res => {
-          expect(res.body.msg).to.equal('Route Not Found');
-        });
-    });
-  });
-  describe('Method Not Allowed', () => {
-    it('POST/PUT/PATCH on routes where not allowed status: 405 and serves message method not allowed', () => {
-      return request
-        .post('/api/articles')
-        .expect(405)
-        .then(res => {
-          expect(res.body.msg).to.equal('Method Not Allowed');
-        });
-    });
-  });
-  describe('Bad queries', () => {
-    it('status 400 and serves message bad request for invalid column names', () => {
-      return request
-        .get('/api/articles?sort_by=lemondrops')
-        .expect(400)
-        .then(res => {
-          expect(res.body.msg).to.equal('Bad Request');
-        });
-    });
-    it('status 400 and serves message bad request for invalid article_id', () => {
-      return request
-        .get('/api/articles/blue')
-        .expect(400)
-        .then(res => {
-          expect(res.body.msg).to.equal('Bad Request');
-        });
-    });
-    it('status 400 and serves message bad request for missing inc_votes on request body', () => {
-      return request
-        .patch('/api/comments/1')
-        .send({})
-        .expect(400)
-        .then(res => {
-          expect(res.body.msg).to.equal('Bad Request');
-        });
-    });
-    it('status 400 and serves message bad request for invalid inc_votes on comments request body', () => {
-      return request
-        .patch('/api/comments/1')
-        .send({ inc_votes: 'shovel' })
-        .expect(400)
-        .then(res => {
-          expect(res.body.msg).to.equal('Bad Request');
-        });
-    });
-    it('status 400 and serves message bad request for invalid inc_votes on articles request body', () => {
-      return request
-        .patch('/api/articles/1')
-        .send({ inc_votes: 'shovel' })
-        .expect(400)
-        .then(res => {
-          expect(res.body.msg).to.equal('Bad Request');
-        });
-    });
-    it('status 400 and serves message bad request for extraneous items on request body', () => {
-      return request
-        .patch('/api/articles/1')
-        .send({ inc_votes: 1, name: 'Excalibur' })
-        .expect(400)
-        .then(res => {
-          expect(res.body.msg).to.equal('Bad Request');
-        });
+      it('Status 404 and message Route not found for user not in db', () => {
+        return request
+          .get('/api/users/fatherchristmas')
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal('User Not Found');
+          });
+      });
+      it('POST/PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
+        return request
+          .delete('/api/users/butter_bridge')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
+          });
+      });
     });
   });
 });

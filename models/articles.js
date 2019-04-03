@@ -22,19 +22,23 @@ const updateArticleById = req => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
 
-  return connection
-    .select('votes')
-    .from('articles')
+  return connection('articles')
     .where('article_id', '=', article_id)
-    .then(votes => {
-      let currentVotes = votes[0].votes;
-      return connection
-        .select('*')
-        .from('articles')
-        .update('votes', inc_votes + currentVotes)
-        .where('article_id', '=', article_id)
-        .returning('*');
-    });
+    .increment('votes', inc_votes)
+    .returning('*');
+
+  // .select('votes')
+  // .from('articles')
+  // .where('article_id', '=', article_id)
+  // .then(votes => {
+  //   let currentVotes = votes[0].votes;
+  //   return connection
+  //     .select('*')
+  //     .from('articles')
+  //     .update('votes', inc_votes + currentVotes)
+  //     .where('article_id', '=', article_id)
+  //     .returning('*');
+  // });
 };
 
 const deleteArticleById = params => {
