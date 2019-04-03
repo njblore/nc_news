@@ -6,15 +6,25 @@ const {
   postCommentByArticleId,
 } = require('../models/articles');
 const { fetchTopics } = require('../models/topics');
+const { fetchUserById } = require('../models/users');
 
 const sendArticles = (req, res, next) => {
-  Promise.all([fetchTopics(), fetchArticles(req.query)])
-    .then(([topics, articles]) => {
+  const username = req.query.author;
+  Promise.all([
+    fetchTopics(),
+    fetchUserById({ username }),
+    fetchArticles(req.query),
+  ])
+    .then(([topics, author, articles]) => {
       if (
         req.query.topic &&
         !topics.map(topic => topic.slug).includes(req.query.topic)
       ) {
-        next({ status: 404, msg: 'Route Not Found' });
+        next({ status: 404, msg: 'Topic Not Found' });
+      } else if (req.query.author) {
+        if (author.length === 0) {
+          next({ status: 404, msg: 'Author Not Found' });
+        }
       } else {
         res.status(200).send({ articles });
       }

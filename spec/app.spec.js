@@ -89,6 +89,14 @@ describe('/', () => {
             expect(res.body.articles).to.eql([]);
           });
       });
+      it('GET status 404 for author not in db', () => {
+        return request
+          .get('/api/articles?author=penelope')
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.eql('Author Not Found');
+          });
+      });
       it('GET status: 200 and accepts query for topic', () => {
         return request
           .get('/api/articles?topic=cats')
@@ -103,7 +111,7 @@ describe('/', () => {
           .get('/api/articles?topic=mushrooms')
           .expect(404)
           .then(res => {
-            expect(res.body.msg).to.eql('Route Not Found');
+            expect(res.body.msg).to.eql('Topic Not Found');
           });
       });
       it('GET status 200 and serves empty array for topic in db with no content', () => {

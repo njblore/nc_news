@@ -11,7 +11,7 @@ X get /asdsa :404
 -get topics?query :200/500
 -sort_by col doesnt exist :400/200 [articles, comments] -> send({msg: err.error})
 -order !== asc/desc :400/200 [articles, articles/id/comments, topics]
--author/topic doesnt exist :404 [~, ~, ~]
+X author/topic doesnt exist :404 [~, ~, ~]
 X author/topic exists but nothing associated with it :200 and empty array [~,~]
 X bad id eg str instead of num :400 [~, ~, ~]
 
