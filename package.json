@@ -18,8 +18,13 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.2.0",
+    "chai-sorted": "^0.2.0",
     "mocha": "^6.0.2",
     "nodemon": "^1.18.10",
     "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "knex": "^0.16.3",
+    "pg": "^7.9.0"
   }
 }
