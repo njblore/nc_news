@@ -5,12 +5,14 @@ exports.up = function(connection, Promise) {
     commentsTable
       .foreign('created_by')
       .references('username')
-      .inTable('users');
+      .inTable('users')
+      .onDelete('CASCADE');
     commentsTable.text('body');
     commentsTable
       .integer('article_id')
       .references('article_id')
-      .inTable('articles');
+      .inTable('articles')
+      .onDelete('CASCADE');
     commentsTable.integer('votes').defaultTo(0);
     commentsTable.date('created_at');
   });

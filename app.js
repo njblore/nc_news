@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const apiRouter = require('./routes/api');
-const { routeNotFound, handle500, handleCustomErrors } = require('./errors');
+const { routeNotFound, handleCustomErrors } = require('./errors');
 
 app.use(express.json());
 

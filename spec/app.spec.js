@@ -56,7 +56,7 @@ describe('/', () => {
           });
       });
     });
-    describe.only('/api/articles', () => {
+    describe('/api/articles', () => {
       it('GET status: 200 serves an array of article objects', () => {
         return request
           .get('/api/articles')
@@ -246,7 +246,6 @@ describe('/', () => {
           .delete('/api/articles/3')
           .expect(200)
           .then(res => {
-            console.log(res.body);
             expect(res.body.msg).to.equal(
               'Article with id 3 has been deleted.',
             );

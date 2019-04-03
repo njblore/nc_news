@@ -72,19 +72,27 @@ const removeArticleById = (req, res, next) => {
 
 const sendCommentsByArticleId = (req, res, next) => {
   const queriesAndParams = { ...req.query, ...req.params };
-  Promise.all([
-    fetchArticles(queriesAndParams),
-    fetchCommentsByArticleId(queriesAndParams),
-  ])
-    .then(([article, comments]) => {
-      console.log(comments);
-      if (article.length === 0) {
-        next({ status: 404, msg: 'Article Not Found' });
-      } else {
-        res.status(200).send({ comments });
-      }
-    })
-    .catch(next);
+
+  if (
+    req.query.order &&
+    req.query.order !== 'asc' &&
+    req.query.order !== 'desc'
+  ) {
+    next({ status: 400, msg: 'Bad Request' });
+  } else {
+    Promise.all([
+      fetchArticles(queriesAndParams),
+      fetchCommentsByArticleId(queriesAndParams),
+    ])
+      .then(([article, comments]) => {
+        if (article.length === 0) {
+          next({ status: 404, msg: 'Article Not Found' });
+        } else {
+          res.status(200).send({ comments });
+        }
+      })
+      .catch(next);
+  }
 };
 
 const addCommentOnArticleId = (req, res, next) => {
