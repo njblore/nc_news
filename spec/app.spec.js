@@ -46,6 +46,15 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
+      it('INVALID QUERY status 200', () => {
+        return request
+          .get('/api/topics?slug=cats')
+          .expect(200)
+          .then(res => {
+            expect(res.body.topics).to.be.an('array');
+            expect(res.body.topics[0]).to.contain.keys('slug', 'description');
+          });
+      });
     });
     describe('/api/articles', () => {
       it('GET status: 200 serves an array of article objects', () => {
@@ -144,6 +153,14 @@ describe('/', () => {
           .expect(200)
           .then(res => {
             expect(res.body.articles).to.be.ascendingBy('title');
+          });
+      });
+      it('INVALID SORT BY status: 400', () => {
+        return request
+          .get('/api/articles/sort_by=telemetry')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
           });
       });
       it('POST/PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
@@ -290,6 +307,14 @@ describe('/', () => {
           .expect(200)
           .then(res => {
             expect(res.body.comments).to.be.ascendingBy('author');
+          });
+      });
+      it('INVALID SORT BY status: 400', () => {
+        return request
+          .get('/api/articles/3/comments?sort_by=france')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
           });
       });
       it('POST status: 201 posts comment to article at article-id', () => {

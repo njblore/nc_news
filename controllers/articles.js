@@ -10,6 +10,7 @@ const { fetchUserById } = require('../models/users');
 
 const sendArticles = (req, res, next) => {
   const username = req.query.author;
+
   Promise.all([
     fetchTopics(),
     fetchUserById({ username }),
