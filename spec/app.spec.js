@@ -446,7 +446,7 @@ describe('/', () => {
             expect(res.body.comment.votes).to.equal(101);
           });
       });
-      it('INVALID VOTES status: 400 when there are no inc_votes on the body', () => {
+      it('INVALID VOTES status: 400 when there are non integer inc_votes on the body', () => {
         return request
           .patch('/api/comments/3')
           .send({ inc_votes: 'banana' })
@@ -489,10 +489,18 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
-      it('INVALID ID status: 400', () => {
+      it('PATCH INVALID ID status: 400', () => {
         return request
           .patch('/api/comments/pigeon')
           .send({ inc_votes: 10 })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
+      it('DELETE INVALID ID status: 400', () => {
+        return request
+          .delete('/api/comments/chihuahua')
           .expect(400)
           .then(res => {
             expect(res.body.msg).to.equal('Bad Request');
