@@ -354,12 +354,53 @@ describe('/', () => {
             );
           });
       });
-      it('INVALID ID status: 404', () => {
+      it('GET INVALID ID status: 404', () => {
         return request
           .get('/api/articles/666/comments')
           .expect(404)
           .then(res => {
             expect(res.body.msg).to.equal('Article Not Found');
+          });
+      });
+      it('POST INVALID ID status: 404', () => {
+        return request
+          .post('/api/articles/666/comments')
+          .send({
+            username: 'icellusedkars',
+            body: 'This article is a steaming heap of mashed potatoes.',
+          })
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal(
+              'Key (article_id)=(666) is not present in table "articles".',
+            );
+          });
+      });
+      it('POST missing keys on body status: 400', () => {
+        request
+          .post('/api/articles/1/comments')
+          .send({ body: 'Hate it!' })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
+      it('POST extra keys on body status 201', () => {
+        request
+          .post('/api/articles/1/comments')
+          .send({
+            username: 'icellusedkars',
+            body: 'Great work keep it up.',
+            chickens: 'count em',
+          })
+          .expect(201)
+          .then(res => {
+            expect(res.body.comment).to.contain.keys(
+              'comment_id',
+              'body',
+              'article_id',
+              'votes',
+            );
           });
       });
       it('PUT/DELETE status: 405 and serves message method not allowed', () => {
@@ -370,7 +411,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
-      it('INVALID ID status: 400 for invalid article_id', () => {
+      it('GET INVALID ID status: 400 for invalid article_id', () => {
         return request
           .get('/api/articles/flamingos/comments')
           .expect(400)

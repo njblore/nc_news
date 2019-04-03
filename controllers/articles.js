@@ -96,6 +96,12 @@ const sendCommentsByArticleId = (req, res, next) => {
 };
 
 const addCommentOnArticleId = (req, res, next) => {
+  if (
+    !Object.keys(req.body).includes('body') |
+    !Object.keys(req.body).includes('username')
+  ) {
+    next({ status: 400, msg: 'Bad Request' });
+  }
   postCommentByArticleId(req)
     .then(([comment]) => {
       res.status(201).send({ comment });
