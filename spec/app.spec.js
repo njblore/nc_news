@@ -137,12 +137,32 @@ describe('/', () => {
             expect(res.body.articles).to.have.lengthOf(11);
           });
       });
+      it('GET status: 200 accepts query p for page to start at', () => {
+        return request
+          .get('/api/articles?limit=1&&sort_by=title&&order=asc&&p=2')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.have.lengthOf(1);
+            expect(res.body.articles).to.be.ascendingBy('title');
+            expect(res.body.articles[0].title).to.equal(
+              'Does Mitch predate civilisation?',
+            );
+          });
+      });
       it('GET status: 400 for bad limit query', () => {
         return request
           .get('/api/articles?limit=tuna')
           .expect(400)
           .then(res => {
             expect(res.body.msg).to.equal('Invalid Limit');
+          });
+      });
+      it('GET status: 400 for bad p query', () => {
+        return request
+          .get('/api/articles?p=pineapple')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
           });
       });
       it('GET status: 200 default sort order by date', () => {

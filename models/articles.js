@@ -1,7 +1,7 @@
 const connection = require('../db/connection');
 
 const fetchArticles = query => {
-  const { author, topic, sort_by, order, article_id, limit } = query;
+  const { author, topic, sort_by, order, article_id, limit, p } = query;
   return connection
     .select('articles.*')
     .count({ comment_count: 'comment_id' })
@@ -10,6 +10,7 @@ const fetchArticles = query => {
     .groupBy('articles.article_id')
     .orderBy(sort_by || 'created_at', order || 'desc')
     .limit(limit || 10)
+    .offset(p || 0)
     .modify(articleQuery => {
       if (author) articleQuery.where({ author });
       if (topic) articleQuery.where({ topic });
