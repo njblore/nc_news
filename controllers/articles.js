@@ -66,10 +66,14 @@ const sendUpdatedArticle = (req, res, next) => {
 
 const removeArticleById = (req, res, next) => {
   deleteArticleById(req.params)
-    .then(() => {
-      res.status(200).send({
-        msg: `Article with id ${req.params.article_id} has been deleted.`,
-      });
+    .then(numOfDeletions => {
+      if (!numOfDeletions) {
+        next({ status: 404, msg: 'Article Not Found' });
+      } else {
+        res.status(200).send({
+          msg: `Article with id ${req.params.article_id} has been deleted.`,
+        });
+      }
     })
     .catch(next);
 };

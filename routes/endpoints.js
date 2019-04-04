@@ -12,7 +12,7 @@ exports.endpoints = {
       'serves an array of all comments for one article by its id, accepts queries for sort_by, order',
     POST: 'post a comment to an article by the article_id',
   },
-  '/api.articles/comments/:comment_id': {
+  '/api/comments/:comment_id': {
     PATCH: 'update votes on a comment by comment_id using inc_votes',
     DELETE: 'delete one comment by its comment_id',
   },

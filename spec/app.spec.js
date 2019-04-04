@@ -28,7 +28,7 @@ describe('/', () => {
             '/api/topics',
             '/api/articles',
             '/api/articles/article_id/comments',
-            '/api.articles/comments/:comment_id',
+            '/api/comments/:comment_id',
             '/api/users/:username',
           );
         });
@@ -246,7 +246,7 @@ describe('/', () => {
             );
           });
       });
-      it('DELETE status: 204 deletes article with given id and responds with no content', () => {
+      it('DELETE status: 200 deletes article with given id', () => {
         return request
           .delete('/api/articles/3')
           .expect(200)
@@ -298,6 +298,14 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
+      it.only('DELETE ARTICLE ID NOT FOUND status: 404', () => {
+        return request
+          .delete('/api/articles/666')
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal('Article Not Found');
+          });
+      });
     });
     describe('/api/articles/:article_id/comments', () => {
       it('GET status: 200 serves an array of comment objects for an article', () => {
@@ -339,7 +347,7 @@ describe('/', () => {
             expect(res.body.comments).to.be.ascendingBy('author');
           });
       });
-      it('INVALID SORT BY status: 400', () => {
+      it('GET INVALID SORT BY status: 400', () => {
         return request
           .get('/api/articles/3/comments?sort_by=france')
           .expect(400)
@@ -347,7 +355,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Bad Request');
           });
       });
-      it('INVALID ORDER for sorting status: 400', () => {
+      it('GET INVALID ORDER for sorting status: 400', () => {
         return request
           .get('/api/articles/1/comments?order=fishfingers')
           .expect(400)
@@ -527,6 +535,14 @@ describe('/', () => {
           .expect(400)
           .then(res => {
             expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
+      it('DELETE ID NOT FOUND status: 404', () => {
+        return request
+          .delete('/api/comments/666')
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal('Comment Not Found');
           });
       });
     });

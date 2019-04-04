@@ -1,0 +1,10 @@
+delete err handling:
+
+deletehousebyId.then(numberofdeletions => {
+if (!numberofdeletions) {
+    return promise.reject({status:400, msg:''})
+}
+else {
+    res.sendStatus(204)
+}
+})

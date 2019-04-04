@@ -10,10 +10,14 @@ const sendUpdatedComment = (req, res, next) => {
 
 const removeCommentById = (req, res, next) => {
   deleteCommentById(req.params)
-    .then(() => {
-      res.status(200).send({
-        msg: `Comment with id ${req.params.comment_id} has been removed.`,
-      });
+    .then(numOfDeletions => {
+      if (!numOfDeletions) {
+        next({ status: 404, msg: 'Comment Not Found' });
+      } else {
+        res.status(200).send({
+          msg: `Comment with id ${req.params.comment_id} has been removed.`,
+        });
+      }
     })
     .catch(next);
 };
