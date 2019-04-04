@@ -88,21 +88,21 @@ describe('/', () => {
       });
       it('GET status: 200 adds a total count property showing total number of articles', () => {
         return request
-          .get('/api/articles')
-          .expect(200)
-          .then(res => {
-            expect(res.body).to.contain.keys('total_count', 'articles');
-            expect(res.body.total_count).to.equal(10);
-          });
-      });
-      it('GET status: 200 adds a total count property that is applied after any filters', () => {
-        return request
           .get('/api/articles?author=butter_bridge')
           .expect(200)
           .then(res => {
+            expect(res.body).to.contain.keys('total_count', 'articles');
             expect(res.body.total_count).to.equal(3);
           });
       });
+      // it.only('GET status: 200 adds a total count property that is applied after any filters', () => {
+      //   return request
+      //     .get('/api/articles?author=butter_bridge&&limit=1')
+      //     .expect(200)
+      //     .then(res => {
+      //       expect(res.body.total_count).to.equal(3);
+      //     });
+      // });
       it('GET status: 200 and accepts query for author', () => {
         return request
           .get('/api/articles?author=butter_bridge')
@@ -167,7 +167,7 @@ describe('/', () => {
       });
       it('GET status: 200 default sort order by date', () => {
         return request
-          .get('/api/articles?topic=mitch')
+          .get('/api/articles')
           .expect(200)
           .then(res => {
             expect(res.body.articles).to.be.descendingBy('created_at');
@@ -386,9 +386,10 @@ describe('/', () => {
       });
       it('GET status: 200 sort order default to created_at', () => {
         return request
-          .get('/api/articles/1/comments')
+          .get('/api/articles/3/comments')
           .expect(200)
           .then(res => {
+            console.log(res.body.comments.map(comment => comment.comment_id));
             expect(res.body.comments).to.be.descendingBy('created_at');
           });
       });
@@ -467,7 +468,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Bad Request');
           });
       });
-      it('POST status: 201 posts comment to article at article-id', () => {
+      it.only('POST status: 201 posts comment to article at article-id', () => {
         return request
           .post('/api/articles/1/comments')
           .send({
@@ -476,10 +477,11 @@ describe('/', () => {
           })
           .expect(201)
           .then(res => {
+            console.log(res.body.comment);
             expect(res.body.comment).to.contain.keys(
               'comment_id',
               'created_at',
-              'created_by',
+              'author',
               'body',
               'article_id',
               'votes',

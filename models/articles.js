@@ -9,14 +9,14 @@ const fetchArticles = query => {
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .groupBy('articles.article_id')
     .orderBy(sort_by || 'created_at', order || 'desc')
-    .limit(limit || 10)
-    .offset(p || 0)
     .modify(articleQuery => {
       if (author) articleQuery.where({ author });
       if (topic) articleQuery.where({ topic });
       if (article_id)
         articleQuery.where('articles.article_id', '=', article_id);
-    });
+    })
+    .limit(limit || 10)
+    .offset(p || 0);
 };
 
 const updateArticleById = req => {
@@ -27,19 +27,6 @@ const updateArticleById = req => {
     .where('article_id', '=', article_id)
     .increment('votes', inc_votes)
     .returning('*');
-
-  // .select('votes')
-  // .from('articles')
-  // .where('article_id', '=', article_id)
-  // .then(votes => {
-  //   let currentVotes = votes[0].votes;
-  //   return connection
-  //     .select('*')
-  //     .from('articles')
-  //     .update('votes', inc_votes + currentVotes)
-  //     .where('article_id', '=', article_id)
-  //     .returning('*');
-  // });
 };
 
 const deleteArticleById = params => {
@@ -77,7 +64,20 @@ const postCommentByArticleId = req => {
   return connection
     .insert(commentObject)
     .into('comments')
-    .returning('*');
+    .then(() => {
+      return connection
+        .select(
+          'comment_id',
+          'author',
+          'comments.created_at',
+          'comments.article_id',
+          'comments.body',
+          'comments.votes',
+        )
+        .from('comments')
+        .where('comments.body', '=', body)
+        .leftJoin('articles', 'comments.article_id', 'articles.article_id');
+    });
 };
 
 module.exports = {

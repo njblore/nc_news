@@ -6,7 +6,10 @@ const usersRouter = require('./usersRouter');
 const { methodNotAllowed } = require('../errors');
 const endpoints = require('./endpoints');
 
-apiRouter.route('/').get((req, res) => res.status(200).send(endpoints));
+apiRouter
+  .route('/')
+  .get((req, res) => res.status(200).send(endpoints))
+  .all(methodNotAllowed);
 
 apiRouter.use('/topics', topicsRouter);
 apiRouter.use('/articles', articleRouter);
