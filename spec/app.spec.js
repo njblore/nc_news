@@ -468,7 +468,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Bad Request');
           });
       });
-      it.only('POST status: 201 posts comment to article at article-id', () => {
+      it('POST status: 201 posts comment to article at article-id', () => {
         return request
           .post('/api/articles/1/comments')
           .send({
@@ -633,6 +633,15 @@ describe('/', () => {
           .expect(400)
           .then(res => {
             expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
+      it('PATCH status: 404 for ID not in db', () => {
+        return request
+          .patch('/api/comments/666')
+          .send({ inc_votes: 5 })
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal('Comment Not Found');
           });
       });
       it('DELETE INVALID ID status: 400', () => {

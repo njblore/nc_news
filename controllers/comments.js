@@ -6,7 +6,11 @@ const sendUpdatedComment = (req, res, next) => {
   }
   updateCommentById(req)
     .then(([comment]) => {
-      res.status(200).send({ comment });
+      if (!comment) {
+        next({ status: 404, msg: 'Comment Not Found' });
+      } else {
+        res.status(200).send({ comment });
+      }
     })
     .catch(next);
 };
