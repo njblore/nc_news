@@ -1,51 +1,17 @@
-# nc_news
+# **Northcoders News**
 
-## Available Scripts
+## Getting Started
 
-Create development and test databases locally:
+### Prerequisites
 
-```bash
-npm run setup-dbs
+```
+ Examples
 ```
 
-Create a new migration file:
+### Installation
 
-```bash
-npm run migrate-make <filename>
+```
+ Examples
 ```
 
-Run all migrations:
-
-```bash
-npm run migrate-latest
-```
-
-Rollback all migrations:
-
-```bash
-npm run migrate-rollback
-```
-
-Run tests:
-
-```bash
-npm test
-```
-
-Rollback, migrate -> latest, then start inserting data into the database:
-
-```bash
-npm run seed
-```
-
-Run the server with `nodemon`, for hot reload:
-
-```bash
-npm run dev
-```
-
-Run the server with `node`:
-
-```bash
-npm start
-```
+## Running The Tests
