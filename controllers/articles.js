@@ -94,6 +94,8 @@ const sendCommentsByArticleId = (req, res, next) => {
     req.query.order !== 'desc'
   ) {
     next({ status: 400, msg: 'Bad Request' });
+  } else if (req.query.limit && !req.query.limit.match(/\d+/)) {
+    next({ status: 400, msg: 'Invalid Limit' });
   } else {
     Promise.all([
       fetchArticles(queriesAndParams),

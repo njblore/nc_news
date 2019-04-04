@@ -408,6 +408,30 @@ describe('/', () => {
             expect(res.body.comments).to.be.ascendingBy('author');
           });
       });
+      it('GET status: 200 default max number of results shown is 10', () => {
+        return request
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(res => {
+            expect(res.body.comments).to.have.lengthOf(10);
+          });
+      });
+      it('GET status: 200 accepts limit query', () => {
+        return request
+          .get('/api/articles/1/comments?limit=5')
+          .expect(200)
+          .then(res => {
+            expect(res.body.comments).to.have.lengthOf(5);
+          });
+      });
+      it('GET INVALID LIMIT status:400', () => {
+        return request
+          .get('/api/articles/1/comments?limit=sky')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Invalid Limit');
+          });
+      });
       it('GET INVALID SORT BY status: 400', () => {
         return request
           .get('/api/articles/3/comments?sort_by=france')

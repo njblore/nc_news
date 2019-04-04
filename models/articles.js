@@ -50,13 +50,14 @@ const deleteArticleById = params => {
 };
 
 const fetchCommentsByArticleId = queriesAndParams => {
-  const { article_id, sort_by, order } = queriesAndParams;
+  const { article_id, sort_by, order, limit } = queriesAndParams;
   return connection
     .select('comment_id', 'votes', 'created_at', 'body', 'username as author')
     .from('comments')
     .leftJoin('users', 'users.username', 'comments.created_by')
     .where('article_id', '=', article_id)
-    .orderBy(sort_by || 'created_at', order || 'desc');
+    .orderBy(sort_by || 'created_at', order || 'desc')
+    .limit(limit || 10);
 };
 
 const postCommentByArticleId = req => {
