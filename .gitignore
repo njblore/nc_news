@@ -1,4 +1,5 @@
 node_modules
 knexfile.js
 .DS_Store
+notes
 npm-debug.log
