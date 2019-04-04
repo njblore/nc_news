@@ -57,6 +57,9 @@ const sendSingleArticle = (req, res, next) => {
 };
 
 const sendUpdatedArticle = (req, res, next) => {
+  if (!req.body.inc_votes) {
+    req.body.inc_votes = 0;
+  }
   updateArticleById(req)
     .then(([article]) => {
       if (!article) {

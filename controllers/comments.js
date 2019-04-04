@@ -1,6 +1,9 @@
 const { updateCommentById, deleteCommentById } = require('../models/comments');
 
 const sendUpdatedComment = (req, res, next) => {
+  if (!req.body.inc_votes) {
+    req.body.inc_votes = 0;
+  }
   updateCommentById(req)
     .then(([comment]) => {
       res.status(200).send({ comment });

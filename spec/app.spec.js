@@ -259,7 +259,7 @@ describe('/', () => {
           .send({})
           .expect(200)
           .then(res => {
-            expect(res.body.article.votes).to.equal(1);
+            expect(res.body.article.votes).to.equal(0);
           });
       });
       it('PATCH INVALID VOTES status: 400 when there are invalid inc_votes value on the body', () => {
@@ -515,7 +515,7 @@ describe('/', () => {
           .send({})
           .expect(200)
           .then(res => {
-            expect(res.body.comment.votes).to.equal(101);
+            expect(res.body.comment.votes).to.equal(100);
           });
       });
       it('INVALID VOTES status: 400 when there are non integer inc_votes on the body', () => {
