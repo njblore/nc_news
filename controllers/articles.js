@@ -98,7 +98,7 @@ const sendCommentsByArticleId = (req, res, next) => {
     next({ status: 400, msg: 'Invalid Limit' });
   } else {
     Promise.all([
-      fetchArticles(queriesAndParams),
+      fetchArticles({ article_id: req.params.article_id }),
       fetchCommentsByArticleId(queriesAndParams),
     ])
       .then(([article, comments]) => {

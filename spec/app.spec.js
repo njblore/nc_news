@@ -424,6 +424,25 @@ describe('/', () => {
             expect(res.body.comments).to.have.lengthOf(5);
           });
       });
+      it('GET status: 200 accepts limit for p', () => {
+        return request
+          .get('/api/articles/1/comments?sort_by=body&&limit=1&&p=2')
+          .expect(200)
+          .then(res => {
+            expect(res.body.comments).to.have.lengthOf(1);
+            expect(res.body.comments[0].body).to.equal(
+              'Superficially charming',
+            );
+          });
+      });
+      it('GET INVALID p status: 400', () => {
+        return request
+          .get('/api/articles/1/comments?p=phonics')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
       it('GET INVALID LIMIT status:400', () => {
         return request
           .get('/api/articles/1/comments?limit=sky')
