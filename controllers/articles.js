@@ -77,9 +77,7 @@ const removeArticleById = (req, res, next) => {
       if (!numOfDeletions) {
         next({ status: 404, msg: 'Article Not Found' });
       } else {
-        res.status(200).send({
-          msg: `Article with id ${req.params.article_id} has been deleted.`,
-        });
+        res.sendStatus(204);
       }
     })
     .catch(next);

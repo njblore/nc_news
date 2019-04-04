@@ -21,9 +21,7 @@ const removeCommentById = (req, res, next) => {
       if (!numOfDeletions) {
         next({ status: 404, msg: 'Comment Not Found' });
       } else {
-        res.status(200).send({
-          msg: `Comment with id ${req.params.comment_id} has been removed.`,
-        });
+        res.sendStatus(204);
       }
     })
     .catch(next);

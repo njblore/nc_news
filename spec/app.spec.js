@@ -33,6 +33,14 @@ describe('/', () => {
           );
         });
     });
+    it('DELETE/PATCH/PUT/POST status: 405', () => {
+      return request
+        .delete('/api')
+        .expect(405)
+        .then(res => {
+          expect(res.body.msg).to.equal('Method Not Allowed');
+        });
+    });
     describe('/api/topics', () => {
       it('GET status:200 serves an array of topic objects', () => {
         return request
@@ -307,15 +315,8 @@ describe('/', () => {
             );
           });
       });
-      it('DELETE status: 200 deletes article with given id', () => {
-        return request
-          .delete('/api/articles/3')
-          .expect(200)
-          .then(res => {
-            expect(res.body.msg).to.equal(
-              'Article with id 3 has been deleted.',
-            );
-          });
+      it('DELETE status: 204 deletes article with given id', () => {
+        return request.delete('/api/articles/3').expect(204);
       });
       it('GET ARTICLE ID NOT FOUND Status: 404 ', () => {
         return request
@@ -608,15 +609,8 @@ describe('/', () => {
             );
           });
       });
-      it('DELETE status: 200 returns confirmation of removed comment', () => {
-        return request
-          .delete('/api/comments/2')
-          .expect(200)
-          .then(res => {
-            expect(res.body.msg).to.equal(
-              'Comment with id 2 has been removed.',
-            );
-          });
+      it('DELETE status: 204', () => {
+        return request.delete('/api/comments/2').expect(204);
       });
       it('POST/PUT status: 405 and serves message method not allowed', () => {
         return request
