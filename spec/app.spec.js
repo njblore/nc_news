@@ -86,6 +86,23 @@ describe('/', () => {
             expect(res.body.articles[0]).to.contain.keys('comment_count');
           });
       });
+      it('GET status: 200 adds a total count property showing total number of articles', () => {
+        return request
+          .get('/api/articles')
+          .expect(200)
+          .then(res => {
+            expect(res.body).to.contain.keys('total_count', 'articles');
+            expect(res.body.total_count).to.equal(10);
+          });
+      });
+      it('GET status: 200 adds a total count property that is applied after any filters', () => {
+        return request
+          .get('/api/articles?author=butter_bridge')
+          .expect(200)
+          .then(res => {
+            expect(res.body.total_count).to.equal(3);
+          });
+      });
       it('GET status: 200 and accepts query for author', () => {
         return request
           .get('/api/articles?author=butter_bridge')
@@ -128,6 +145,30 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Invalid Limit');
           });
       });
+      it('GET status: 200 default sort order by date', () => {
+        return request
+          .get('/api/articles?topic=mitch')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.descendingBy('created_at');
+          });
+      });
+      it('GET status: 200 accepts query for sort order', () => {
+        return request
+          .get('/api/articles?sort_by=author')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.descendingBy('author');
+          });
+      });
+      it('GET status: 200 accepts query for sort direction', () => {
+        return request
+          .get('/api/articles?sort_by=title&&order=asc')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.ascendingBy('title');
+          });
+      });
       it('GET status 200 and serves empty array for author in db with no content', () => {
         return request
           .get('/api/articles?author=pinkelephant')
@@ -158,30 +199,6 @@ describe('/', () => {
           .expect(200)
           .then(res => {
             expect(res.body.articles).to.eql([]);
-          });
-      });
-      it('GET status: 200 default sort order by date', () => {
-        return request
-          .get('/api/articles?topic=mitch')
-          .expect(200)
-          .then(res => {
-            expect(res.body.articles).to.be.descendingBy('created_at');
-          });
-      });
-      it('GET status: 200 accepts query for sort order', () => {
-        return request
-          .get('/api/articles?sort_by=author')
-          .expect(200)
-          .then(res => {
-            expect(res.body.articles).to.be.descendingBy('author');
-          });
-      });
-      it('GET status: 200 accepts query for sort direction', () => {
-        return request
-          .get('/api/articles?sort_by=title&&order=asc')
-          .expect(200)
-          .then(res => {
-            expect(res.body.articles).to.be.ascendingBy('title');
           });
       });
       it('GET INVALID SORT BY status: 400', () => {
