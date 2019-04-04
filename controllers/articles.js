@@ -14,7 +14,9 @@ const sendArticles = (req, res, next) => {
     req.query.order !== 'asc' &&
     req.query.order !== 'desc'
   ) {
-    next({ status: 400, msg: 'Bad Request' });
+    next({ status: 400, msg: 'Invalid Order' });
+  } else if (req.query.limit && !req.query.limit.match(/\d+/)) {
+    next({ status: 400, msg: 'Invalid Limit' });
   } else {
     Promise.all([fetchTopics(), fetchArticles(req.query)])
       .then(([topics, articles]) => {

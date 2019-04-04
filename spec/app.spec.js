@@ -95,6 +95,39 @@ describe('/', () => {
             expect(res.body.articles[0].author).to.equal('butter_bridge');
           });
       });
+      it('GET status: 200 and accepts query for topic', () => {
+        return request
+          .get('/api/articles?topic=cats')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles[0].topic).to.equal('cats');
+            expect(res.body.articles[0].author).to.equal('rogersop');
+          });
+      });
+      it('GET status: 200 default result limit to 10', () => {
+        return request
+          .get('/api/articles')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.lengthOf(10);
+          });
+      });
+      it('GET status: 200 accepts query for result limit', () => {
+        return request
+          .get('/api/articles?limit=11')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.have.lengthOf(11);
+          });
+      });
+      it('GET status: 400 for bad limit query', () => {
+        return request
+          .get('/api/articles?limit=tuna')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Invalid Limit');
+          });
+      });
       it('GET status 200 and serves empty array for author in db with no content', () => {
         return request
           .get('/api/articles?author=pinkelephant')
@@ -109,15 +142,6 @@ describe('/', () => {
           .expect(404)
           .then(res => {
             expect(res.body.msg).to.eql('Author Not Found');
-          });
-      });
-      it('GET status: 200 and accepts query for topic', () => {
-        return request
-          .get('/api/articles?topic=cats')
-          .expect(200)
-          .then(res => {
-            expect(res.body.articles[0].topic).to.equal('cats');
-            expect(res.body.articles[0].author).to.equal('rogersop');
           });
       });
       it('GET status 404 for topic not in db', () => {
@@ -160,7 +184,7 @@ describe('/', () => {
             expect(res.body.articles).to.be.ascendingBy('title');
           });
       });
-      it('INVALID SORT BY status: 400', () => {
+      it('GET INVALID SORT BY status: 400', () => {
         return request
           .get('/api/articles/sort_by=telemetry')
           .expect(400)
@@ -168,12 +192,12 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Bad Request');
           });
       });
-      it('INVALID ORDER for sorting status: 400', () => {
+      it('GET INVALID ORDER for sorting status: 400', () => {
         return request
           .get('/api/articles?order=tobasco')
           .expect(400)
           .then(res => {
-            expect(res.body.msg).to.equal('Bad Request');
+            expect(res.body.msg).to.equal('Invalid Order');
           });
       });
       it('POST/PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
@@ -298,7 +322,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
-      it.only('DELETE ARTICLE ID NOT FOUND status: 404', () => {
+      it('DELETE ARTICLE ID NOT FOUND status: 404', () => {
         return request
           .delete('/api/articles/666')
           .expect(404)
