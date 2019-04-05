@@ -732,6 +732,48 @@ describe('/', () => {
           });
       });
     });
+    describe('/api/users', () => {
+      it('POST status: 201', () => {
+        return request
+          .post('/api/users')
+          .send({
+            username: 'stephosaurus',
+            avatar_url: 'url.com',
+            name: 'Steph',
+          })
+          .expect(201)
+          .then(res => {
+            expect(res.body.user).to.contain.keys(
+              'username',
+              'name',
+              'avatar_url',
+            );
+            expect(res.body.user.name).to.equal('Steph');
+          });
+      });
+      it('GET status: 200', () => {
+        return request
+          .get('/api/users')
+          .expect(200)
+          .then(res => {
+            expect(res.body.users).to.be.an('array');
+            expect(res.body.users[0]).to.contain.keys(
+              'username',
+              'avatar_url',
+              'name',
+            );
+          });
+      });
+      it('POST status: 422 for user already exists', () => {
+        return request
+          .post('/api/users')
+          .send({ username: 'butter_bridge', avatar_url: 'url', name: 'Suze' })
+          .expect(422)
+          .then(res => {
+            expect(res.body.msg).to.equal('User Already Exists');
+          });
+      });
+    });
     describe('/api/users/:username', () => {
       it('GET status: 200 serves a user object', () => {
         return request
@@ -753,7 +795,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('User Not Found');
           });
       });
-      it('POST/PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
+      it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
         return request
           .delete('/api/users/butter_bridge')
           .expect(405)

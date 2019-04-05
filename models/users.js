@@ -8,4 +8,15 @@ const fetchUserById = params => {
     .where('username', '=', username);
 };
 
-module.exports = { fetchUserById };
+const fetchAllUsers = () => {
+  return connection.select('*').from('users');
+};
+
+const addUser = req => {
+  return connection
+    .insert(req)
+    .into('users')
+    .returning('*');
+};
+
+module.exports = { fetchUserById, addUser, fetchAllUsers };

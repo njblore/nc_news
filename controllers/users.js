@@ -1,4 +1,4 @@
-const { fetchUserById } = require('../models/users');
+const { fetchUserById, addUser, fetchAllUsers } = require('../models/users');
 
 const sendUser = (req, res, next) => {
   fetchUserById(req.params)
@@ -12,4 +12,24 @@ const sendUser = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { sendUser };
+const sendAllUsers = (req, res, next) => {
+  fetchAllUsers().then(users => {
+    res.status(200).send({ users });
+  });
+};
+
+const postNewUser = (req, res, next) => {
+  fetchAllUsers()
+    .then(users => {
+      if (users.map(user => user.username).includes(req.body.username)) {
+        res.status(422).send({ msg: 'User Already Exists' });
+      } else {
+        addUser(req.body).then(([user]) => {
+          res.status(201).send({ user });
+        });
+      }
+    })
+    .catch(next);
+};
+
+module.exports = { sendUser, postNewUser, sendAllUsers };
