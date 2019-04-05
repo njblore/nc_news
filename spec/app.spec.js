@@ -829,6 +829,22 @@ describe('/', () => {
             );
           });
       });
+      it.only('PATCH status: 200 updates avatar_url', () => {
+        return request
+          .patch('/api/users/pinkelephant')
+          .send({ avatar_url: 'http://tinyurl.com/y25kru2r' })
+          .expect(200)
+          .then(res => {
+            expect(res.body.user).to.contain.keys(
+              'username',
+              'name',
+              'avatar_url',
+            );
+            expect(res.body.user.avatar_url).to.equal(
+              'http://tinyurl.com/y25kru2r',
+            );
+          });
+      });
       it('GET Status 404 and message Route not found for user not in db', () => {
         return request
           .get('/api/users/fatherchristmas')
@@ -837,7 +853,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('User Not Found');
           });
       });
-      it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
+      it('PUT/DELETE status: 405 and serves message method not allowed', () => {
         return request
           .delete('/api/users/butter_bridge')
           .expect(405)

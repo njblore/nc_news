@@ -1,5 +1,10 @@
 const usersRouter = require('express').Router();
-const { sendUser, postNewUser, sendAllUsers } = require('../controllers/users');
+const {
+  sendUser,
+  postNewUser,
+  sendAllUsers,
+  sendUpdatedUser,
+} = require('../controllers/users');
 const { methodNotAllowed } = require('../errors');
 
 usersRouter
@@ -11,6 +16,7 @@ usersRouter
 usersRouter
   .route('/:username')
   .get(sendUser)
+  .patch(sendUpdatedUser)
   .all(methodNotAllowed);
 
 module.exports = usersRouter;

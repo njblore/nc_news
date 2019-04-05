@@ -19,4 +19,15 @@ const addUser = req => {
     .returning('*');
 };
 
-module.exports = { fetchUserById, addUser, fetchAllUsers };
+const updateUserInfo = req => {
+  const { avatar_url, username } = req;
+
+  return connection
+    .select('*')
+    .from('users')
+    .where('username', '=', username)
+    .update('avatar_url', avatar_url)
+    .returning('*');
+};
+
+module.exports = { fetchUserById, addUser, fetchAllUsers, updateUserInfo };

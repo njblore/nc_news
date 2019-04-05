@@ -1,4 +1,9 @@
-const { fetchUserById, addUser, fetchAllUsers } = require('../models/users');
+const {
+  fetchUserById,
+  addUser,
+  fetchAllUsers,
+  updateUserInfo,
+} = require('../models/users');
 
 const sendUser = (req, res, next) => {
   fetchUserById(req.params)
@@ -38,4 +43,11 @@ const postNewUser = (req, res, next) => {
   }
 };
 
-module.exports = { sendUser, postNewUser, sendAllUsers };
+const sendUpdatedUser = (req, res, next) => {
+  const bodyAndParams = { ...req.params, ...req.body };
+  updateUserInfo(bodyAndParams).then(([user]) => {
+    res.status(200).send({ user });
+  });
+};
+
+module.exports = { sendUser, postNewUser, sendAllUsers, sendUpdatedUser };
