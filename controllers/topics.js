@@ -7,8 +7,16 @@ const sendTopics = (req, res, next) => {
 };
 
 const postTopic = (req, res, next) => {
-  addTopic(req.body).then(([topic]) => {
-    res.status(201).send({ topic });
+  fetchTopics().then(topics => {
+    if (topics.map(topic => topic.slug).includes(req.body.slug)) {
+      res.status(422).send({ msg: 'Topic Already Exists' });
+    } else {
+      addTopic(req.body)
+        .then(([topic]) => {
+          res.status(201).send({ topic });
+        })
+        .catch(next);
+    }
   });
 };
 

@@ -51,7 +51,7 @@ describe('/', () => {
             expect(res.body.topics[0]).to.contain.keys('slug', 'description');
           });
       });
-      it.only('POST status: 201', () => {
+      it('POST status: 201', () => {
         return request
           .post('/api/topics')
           .send({
@@ -62,6 +62,15 @@ describe('/', () => {
           .then(res => {
             expect(res.body.topic).to.contain.keys('slug', 'description');
             expect(res.body.topic.slug).to.equal('paranormal');
+          });
+      });
+      it('POST status: 422 for slug aready in database', () => {
+        return request
+          .post('/api/topics')
+          .send({ slug: 'cats', description: 'feline friends' })
+          .expect(422)
+          .then(res => {
+            expect(res.body.msg).to.equal('Topic Already Exists');
           });
       });
       it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
