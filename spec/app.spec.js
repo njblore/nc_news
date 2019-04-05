@@ -51,9 +51,22 @@ describe('/', () => {
             expect(res.body.topics[0]).to.contain.keys('slug', 'description');
           });
       });
-      it('POST/PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
+      it.only('POST status: 201', () => {
         return request
           .post('/api/topics')
+          .send({
+            slug: 'paranormal',
+            description: 'unexplained and unusual phenomena',
+          })
+          .expect(201)
+          .then(res => {
+            expect(res.body.topic).to.contain.keys('slug', 'description');
+            expect(res.body.topic.slug).to.equal('paranormal');
+          });
+      });
+      it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
+        return request
+          .patch('/api/topics')
           .expect(405)
           .then(res => {
             expect(res.body.msg).to.equal('Method Not Allowed');
@@ -268,7 +281,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Invalid Order');
           });
       });
-      it.only('POST status: 404 for AUTHOR not in db', () => {
+      it('POST status: 404 for AUTHOR not in db', () => {
         return request
           .post('/api/articles')
           .send({
@@ -281,6 +294,22 @@ describe('/', () => {
           .then(res => {
             expect(res.body.msg).to.equal(
               'Key (author)=(fluffybunnies) is not present in table "users".',
+            );
+          });
+      });
+      it('POST status: 404 for topic not in db', () => {
+        return request
+          .post('/api/articles')
+          .send({
+            author: 'butter_bridge',
+            topic: 'fluffy',
+            title: 'Fruit',
+            body: 'Small',
+          })
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal(
+              'Key (topic)=(fluffy) is not present in table "topics".',
             );
           });
       });

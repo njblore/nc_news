@@ -4,4 +4,11 @@ const fetchTopics = () => {
   return connection.select('*').from('topics');
 };
 
-module.exports = { fetchTopics };
+const addTopic = req => {
+  return connection
+    .insert(req)
+    .into('topics')
+    .returning('*');
+};
+
+module.exports = { fetchTopics, addTopic };
