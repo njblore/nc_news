@@ -126,8 +126,13 @@ const addCommentOnArticleId = (req, res, next) => {
 };
 
 const addArticle = (req, res, next) => {
-  if (!req.body.author || !req.body.topic) {
-    next({ status: 400, msg: 'Missing Value for Key author/topic' });
+  if (
+    !req.body.author ||
+    !req.body.topic ||
+    !req.body.title ||
+    !req.body.body
+  ) {
+    next({ status: 400, msg: 'Missing Value for Key author/topic/title/body' });
   }
   postArticle(req.body)
     .then(([article]) => {

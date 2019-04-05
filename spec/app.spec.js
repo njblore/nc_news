@@ -299,7 +299,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Invalid Order');
           });
       });
-      it('POST status: 404 for AUTHOR not in db', () => {
+      it('POST status: 404 for author not in db', () => {
         return request
           .post('/api/articles')
           .send({
@@ -337,7 +337,20 @@ describe('/', () => {
           .send({ author: 'pinkelephant' })
           .expect(400)
           .then(res => {
-            expect(res.body.msg).to.equal('Missing Value for Key author/topic');
+            expect(res.body.msg).to.equal(
+              'Missing Value for Key author/topic/title/body',
+            );
+          });
+      });
+      it('POST status: 400 for missing keys on the body', () => {
+        return request
+          .post('/api/articles')
+          .send({ topic: 'cats', author: 'pinkelephant', title: 'Yarn' })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal(
+              'Missing Value for Key author/topic/title/body',
+            );
           });
       });
       it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
@@ -438,7 +451,7 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Article Not Found');
           });
       });
-      it('PATCH ARTICLE INVALID ID status: 400', () => {
+      it('PATCH INVALID ID status: 400', () => {
         return request
           .patch('/api/articles/articuno')
           .send({ inc_votes: 10 })
@@ -453,6 +466,14 @@ describe('/', () => {
           .expect(404)
           .then(res => {
             expect(res.body.msg).to.equal('Article Not Found');
+          });
+      });
+      it('DELETE INVALID ID status: 404', () => {
+        return request
+          .delete('/api/articles/pizza')
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Bad Request');
           });
       });
       it('PUT/POST status: 405 and serves message method not allowed', () => {
@@ -477,6 +498,28 @@ describe('/', () => {
               'created_at',
               'author',
               'body',
+            );
+          });
+      });
+      it('POST status: 201 posts comment to article at article-id', () => {
+        return request
+          .post('/api/articles/1/comments')
+          .send({
+            username: 'icellusedkars',
+            body: 'This article is a steaming heap of mashed potatoes.',
+          })
+          .expect(201)
+          .then(res => {
+            expect(res.body.comment).to.contain.keys(
+              'comment_id',
+              'created_at',
+              'author',
+              'body',
+              'article_id',
+              'votes',
+            );
+            expect(res.body.comment.body).to.equal(
+              'This article is a steaming heap of mashed potatoes.',
             );
           });
       });
@@ -563,28 +606,6 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Bad Request');
           });
       });
-      it('POST status: 201 posts comment to article at article-id', () => {
-        return request
-          .post('/api/articles/1/comments')
-          .send({
-            username: 'icellusedkars',
-            body: 'This article is a steaming heap of mashed potatoes.',
-          })
-          .expect(201)
-          .then(res => {
-            expect(res.body.comment).to.contain.keys(
-              'comment_id',
-              'created_at',
-              'author',
-              'body',
-              'article_id',
-              'votes',
-            );
-            expect(res.body.comment.body).to.equal(
-              'This article is a steaming heap of mashed potatoes.',
-            );
-          });
-      });
       it('GET INVALID ID status: 404', () => {
         return request
           .get('/api/articles/666/comments')
@@ -634,20 +655,20 @@ describe('/', () => {
             );
           });
       });
-      it('PUT/DELETE status: 405 and serves message method not allowed', () => {
-        return request
-          .delete('/api/articles/1/comments')
-          .expect(405)
-          .then(res => {
-            expect(res.body.msg).to.equal('Method Not Allowed');
-          });
-      });
       it('GET INVALID ID status: 400 for invalid article_id', () => {
         return request
           .get('/api/articles/flamingos/comments')
           .expect(400)
           .then(res => {
             expect(res.body.msg).to.equal('Bad Request');
+          });
+      });
+      it('PUT/DELETE status: 405 and serves message method not allowed', () => {
+        return request
+          .delete('/api/articles/1/comments')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
     });
@@ -668,6 +689,9 @@ describe('/', () => {
             expect(res.body.comment.votes).to.equal(10);
           });
       });
+      it('DELETE status: 204', () => {
+        return request.delete('/api/comments/2').expect(204);
+      });
       it('PATCH status: 200 when there are no inc_votes on the body', () => {
         return request
           .patch('/api/comments/3')
@@ -677,7 +701,7 @@ describe('/', () => {
             expect(res.body.comment.votes).to.equal(100);
           });
       });
-      it('INVALID VOTES status: 400 when there are non integer inc_votes on the body', () => {
+      it('PATCH INVALID VOTES status: 400 when there are non integer inc_votes on the body', () => {
         return request
           .patch('/api/comments/3')
           .send({ inc_votes: 'banana' })
@@ -700,17 +724,6 @@ describe('/', () => {
               'votes',
               'created_at',
             );
-          });
-      });
-      it('DELETE status: 204', () => {
-        return request.delete('/api/comments/2').expect(204);
-      });
-      it('POST/PUT status: 405 and serves message method not allowed', () => {
-        return request
-          .post('/api/comments/1')
-          .expect(405)
-          .then(res => {
-            expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
       it('PATCH INVALID ID status: 400', () => {
@@ -745,6 +758,14 @@ describe('/', () => {
           .expect(404)
           .then(res => {
             expect(res.body.msg).to.equal('Comment Not Found');
+          });
+      });
+      it('POST/PUT status: 405 and serves message method not allowed', () => {
+        return request
+          .post('/api/comments/1')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
     });
