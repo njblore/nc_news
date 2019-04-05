@@ -26,7 +26,11 @@ const updateUserInfo = req => {
     .select('*')
     .from('users')
     .where('username', '=', username)
-    .update('avatar_url', avatar_url)
+    .modify(userQuery => {
+      if (avatar_url) {
+        userQuery.update('avatar_url', avatar_url);
+      }
+    })
     .returning('*');
 };
 

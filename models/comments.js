@@ -1,7 +1,7 @@
 const connection = require('../db/connection');
 
 const updateCommentById = req => {
-  const { inc_votes } = req.body;
+  const inc_votes = req.body.inc_votes || 0;
   const { comment_id } = req.params;
 
   return connection('comments')

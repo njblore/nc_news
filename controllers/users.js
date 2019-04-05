@@ -45,9 +45,17 @@ const postNewUser = (req, res, next) => {
 
 const sendUpdatedUser = (req, res, next) => {
   const bodyAndParams = { ...req.params, ...req.body };
-  updateUserInfo(bodyAndParams).then(([user]) => {
-    res.status(200).send({ user });
-  });
+  fetchUserById(req.params)
+    .then(user => {
+      if (user.length === 0) {
+        next({ status: 404, msg: 'User Not Found' });
+      } else {
+        updateUserInfo(bodyAndParams).then(([user]) => {
+          res.status(200).send({ user });
+        });
+      }
+    })
+    .catch(next);
 };
 
 module.exports = { sendUser, postNewUser, sendAllUsers, sendUpdatedUser };

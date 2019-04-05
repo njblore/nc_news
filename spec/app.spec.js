@@ -829,7 +829,7 @@ describe('/', () => {
             );
           });
       });
-      it.only('PATCH status: 200 updates avatar_url', () => {
+      it('PATCH status: 200 updates avatar_url', () => {
         return request
           .patch('/api/users/pinkelephant')
           .send({ avatar_url: 'http://tinyurl.com/y25kru2r' })
@@ -851,6 +851,30 @@ describe('/', () => {
           .expect(404)
           .then(res => {
             expect(res.body.msg).to.equal('User Not Found');
+          });
+      });
+      it('PATCH status: 404 for username not in db', () => {
+        return request
+          .patch('/api/users/chellyfish')
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal('User Not Found');
+          });
+      });
+      it('PATCH status: 200 for missing avatar_url on body', () => {
+        return request
+          .patch('/api/users/pinkelephant')
+          .send({})
+          .expect(200)
+          .then(res => {
+            expect(res.body.user).to.contain.keys(
+              'username',
+              'name',
+              'avatar_url',
+            );
+            expect(res.body.user.avatar_url).to.equal(
+              'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4',
+            );
           });
       });
       it('PUT/DELETE status: 405 and serves message method not allowed', () => {
