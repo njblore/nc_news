@@ -20,7 +20,7 @@ const addUser = req => {
 };
 
 const updateUserInfo = req => {
-  const { avatar_url, username } = req;
+  const { avatar_url, username, name } = req;
 
   return connection
     .select('*')
@@ -29,6 +29,9 @@ const updateUserInfo = req => {
     .modify(userQuery => {
       if (avatar_url) {
         userQuery.update('avatar_url', avatar_url);
+      }
+      if (name) {
+        userQuery.update('name', name);
       }
     })
     .returning('*');

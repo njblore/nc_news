@@ -845,6 +845,20 @@ describe('/', () => {
             );
           });
       });
+      it('PATCH status: 200 updates name', () => {
+        return request
+          .patch('/api/users/pinkelephant')
+          .send({ name: 'Jolene' })
+          .expect(200)
+          .then(res => {
+            expect(res.body.user).to.contain.keys(
+              'username',
+              'name',
+              'avatar_url',
+            );
+            expect(res.body.user.name).to.equal('Jolene');
+          });
+      });
       it('GET Status 404 and message Route not found for user not in db', () => {
         return request
           .get('/api/users/fatherchristmas')
@@ -877,7 +891,21 @@ describe('/', () => {
             );
           });
       });
-      it('PUT/DELETE status: 405 and serves message method not allowed', () => {
+      it('PATCH status 200 for missing name on body', () => {
+        return request
+          .patch('/api/users/pinkelephant')
+          .send({})
+          .expect(200)
+          .then(res => {
+            expect(res.body.user).to.contain.keys(
+              'username',
+              'name',
+              'avatar_url',
+            );
+            expect(res.body.user.name).to.equal('justine');
+          });
+      });
+      it('PUT/DELETE/POST status: 405 and serves message method not allowed', () => {
         return request
           .delete('/api/users/butter_bridge')
           .expect(405)

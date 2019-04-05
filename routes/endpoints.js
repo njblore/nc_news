@@ -26,5 +26,8 @@ exports.endpoints = {
     GET: 'serves an array of all users in the database',
     POST: 'add a new user to the database',
   },
-  '/api/users/:username': { GET: 'serves one user by its username' },
+  '/api/users/:username': {
+    GET: 'serves one user by its username',
+    PATCH: "update a user's avatar_url and/or name",
+  },
 };
