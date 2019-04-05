@@ -7,7 +7,7 @@ exports.routeNotFound = (req, res, next) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
-  console.log(err);
+  // console.log(err);
   if (err.status) {
     res.status(err.status).send({ msg: err.msg });
   } else {
@@ -26,6 +26,5 @@ exports.handleSQLErrors = (err, req, res, next) => {
 };
 
 exports.handle500 = (err, req, res, next) => {
-  console.log(err);
   res.status(500).send({ msg: 'Internal Server Error' });
 };

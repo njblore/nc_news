@@ -45,11 +45,13 @@ const sendArticles = (req, res, next) => {
 
 const sendSingleArticle = (req, res, next) => {
   fetchArticles(req.params)
-    .then(([article]) => {
-      if (!article) {
+    .then(({ total_count, articles }) => {
+      if (!articles | (articles.length === 0)) {
         next({ status: 404, msg: 'Article Not Found' });
+      } else {
+        article = articles[0];
+        res.status(200).send({ total_count, article });
       }
-      res.status(200).send({ article });
     })
     .catch(next);
 };
@@ -97,8 +99,8 @@ const sendCommentsByArticleId = (req, res, next) => {
       fetchArticles({ article_id: req.params.article_id }),
       fetchCommentsByArticleId(queriesAndParams),
     ])
-      .then(([article, comments]) => {
-        if (article.length === 0) {
+      .then(([{ total_count, articles }, comments]) => {
+        if (articles.length === 0) {
           next({ status: 404, msg: 'Article Not Found' });
         } else {
           res.status(200).send({ comments });

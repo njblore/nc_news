@@ -94,7 +94,7 @@ describe('/', () => {
             expect(res.body.articles[0]).to.contain.keys('comment_count');
           });
       });
-      it.only('GET status: 200 adds a total count property showing total number of articles', () => {
+      it('GET status: 200 adds a total count property showing total number of articles', () => {
         return request
           .get('/api/articles?author=butter_bridge')
           .expect(200)
@@ -103,7 +103,7 @@ describe('/', () => {
             expect(res.body.total_count).to.equal(3);
           });
       });
-      it.only('GET status: 200 adds a total count property that is applied after any filters', () => {
+      it('GET status: 200 adds a total count property that is applied after any filters', () => {
         return request
           .get('/api/articles?author=butter_bridge&&limit=1')
           .expect(200)
