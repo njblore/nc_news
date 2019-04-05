@@ -19,19 +19,23 @@ const sendAllUsers = (req, res, next) => {
 };
 
 const postNewUser = (req, res, next) => {
-  fetchAllUsers()
-    .then(users => {
-      if (users.map(user => user.username).includes(req.body.username)) {
-        res.status(422).send({ msg: 'User Already Exists' });
-      } else {
-        addUser(req.body)
-          .then(([user]) => {
-            res.status(201).send({ user });
-          })
-          .catch(next);
-      }
-    })
-    .catch(next);
+  if (!req.body.name) {
+    res.status(400).send({ msg: 'Missing Key "name".' });
+  } else {
+    fetchAllUsers()
+      .then(users => {
+        if (users.map(user => user.username).includes(req.body.username)) {
+          res.status(422).send({ msg: 'User Already Exists' });
+        } else {
+          addUser(req.body)
+            .then(([user]) => {
+              res.status(201).send({ user });
+            })
+            .catch(next);
+        }
+      })
+      .catch(next);
+  }
 };
 
 module.exports = { sendUser, postNewUser, sendAllUsers };

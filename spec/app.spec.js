@@ -337,9 +337,7 @@ describe('/', () => {
           .send({ author: 'pinkelephant' })
           .expect(400)
           .then(res => {
-            expect(res.body.msg).to.equal(
-              'Missing Value for Key username/topic',
-            );
+            expect(res.body.msg).to.equal('Missing Value for Key author/topic');
           });
       });
       it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
@@ -798,6 +796,15 @@ describe('/', () => {
           .expect(400)
           .then(res => {
             expect(res.body.msg).to.equal("Missing Value for Key 'username'");
+          });
+      });
+      it('POST status: 400 for missing name on body', () => {
+        return request
+          .post('/api/users')
+          .send({ username: 'coffeeTime', avatar_url: 'url' })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal('Missing Key "name".');
           });
       });
       it('PUT/PATCH/DELETE status 405: Method Not Allowed', () => {
