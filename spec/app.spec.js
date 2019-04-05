@@ -94,23 +94,23 @@ describe('/', () => {
             expect(res.body.articles[0]).to.contain.keys('comment_count');
           });
       });
-      it('GET status: 200 adds a total count property showing total number of articles', () => {
+      it.only('GET status: 200 adds a total count property showing total number of articles', () => {
         return request
           .get('/api/articles?author=butter_bridge')
           .expect(200)
           .then(res => {
-            expect(res.body).to.contain.keys('total_count', 'articles');
+            expect(res.body).to.contain.keys('total_count');
             expect(res.body.total_count).to.equal(3);
           });
       });
-      // it.only('GET status: 200 adds a total count property that is applied after any filters', () => {
-      //   return request
-      //     .get('/api/articles?author=butter_bridge&&limit=1')
-      //     .expect(200)
-      //     .then(res => {
-      //       expect(res.body.total_count).to.equal(3);
-      //     });
-      // });
+      it.only('GET status: 200 adds a total count property that is applied after any filters', () => {
+        return request
+          .get('/api/articles?author=butter_bridge&&limit=1')
+          .expect(200)
+          .then(res => {
+            expect(res.body.total_count).to.equal(3);
+          });
+      });
       it('GET status: 200 and accepts query for author', () => {
         return request
           .get('/api/articles?author=butter_bridge')

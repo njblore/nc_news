@@ -19,7 +19,7 @@ const sendArticles = (req, res, next) => {
     next({ status: 400, msg: 'Invalid Limit' });
   } else {
     Promise.all([fetchTopics(), fetchArticles(req.query)])
-      .then(([topics, articles]) => {
+      .then(([topics, { total_count, articles }]) => {
         if (
           req.query.topic &&
           !topics.map(topic => topic.slug).includes(req.query.topic)
@@ -31,13 +31,11 @@ const sendArticles = (req, res, next) => {
               if (author.length === 0) {
                 next({ status: 404, msg: 'Author Not Found' });
               } else {
-                res
-                  .status(200)
-                  .send({ articles, total_count: articles.length });
+                res.status(200).send({ total_count, articles });
               }
             });
           } else {
-            res.status(200).send({ articles, total_count: articles.length });
+            res.status(200).send({ total_count, articles });
           }
         }
       })
