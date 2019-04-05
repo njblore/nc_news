@@ -126,9 +126,11 @@ const addCommentOnArticleId = (req, res, next) => {
 };
 
 const addArticle = (req, res, next) => {
-  postArticle(req.body).then(([article]) => {
-    res.status(201).send({ article });
-  });
+  postArticle(req.body)
+    .then(([article]) => {
+      res.status(201).send({ article });
+    })
+    .catch(next);
 };
 
 module.exports = {

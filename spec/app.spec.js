@@ -268,6 +268,22 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Invalid Order');
           });
       });
+      it.only('POST status: 404 for AUTHOR not in db', () => {
+        return request
+          .post('/api/articles')
+          .send({
+            author: 'fluffybunnies',
+            topic: 'mitch',
+            title: 'Fruit',
+            body: 'Small',
+          })
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal(
+              'Key (author)=(fluffybunnies) is not present in table "users".',
+            );
+          });
+      });
       it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
         return request
           .delete('/api/articles')
@@ -375,20 +391,20 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Bad Request');
           });
       });
-      it('PUT/POST status: 405 and serves message method not allowed', () => {
-        return request
-          .post('/api/articles/1')
-          .expect(405)
-          .then(res => {
-            expect(res.body.msg).to.equal('Method Not Allowed');
-          });
-      });
       it('DELETE ARTICLE ID NOT FOUND status: 404', () => {
         return request
           .delete('/api/articles/666')
           .expect(404)
           .then(res => {
             expect(res.body.msg).to.equal('Article Not Found');
+          });
+      });
+      it('PUT/POST status: 405 and serves message method not allowed', () => {
+        return request
+          .post('/api/articles/1')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
     });
