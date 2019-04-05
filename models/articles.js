@@ -96,10 +96,29 @@ const postCommentByArticleId = req => {
     });
 };
 
+const postArticle = req => {
+  const { author, title, topic, body } = req;
+
+  const created_at = new Date();
+  const articleObj = {
+    author,
+    title,
+    topic,
+    body,
+    created_at: created_at.toISOString(),
+  };
+
+  return connection
+    .insert(articleObj)
+    .into('articles')
+    .returning('*');
+};
+
 module.exports = {
   fetchArticles,
   updateArticleById,
   deleteArticleById,
   fetchCommentsByArticleId,
   postCommentByArticleId,
+  postArticle,
 };

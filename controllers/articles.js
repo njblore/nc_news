@@ -4,6 +4,7 @@ const {
   deleteArticleById,
   fetchCommentsByArticleId,
   postCommentByArticleId,
+  postArticle,
 } = require('../models/articles');
 const { fetchTopics } = require('../models/topics');
 const { fetchUserById } = require('../models/users');
@@ -124,6 +125,12 @@ const addCommentOnArticleId = (req, res, next) => {
     .catch(next);
 };
 
+const addArticle = (req, res, next) => {
+  postArticle(req.body).then(([article]) => {
+    res.status(201).send({ article });
+  });
+};
+
 module.exports = {
   sendArticles,
   sendSingleArticle,
@@ -131,4 +138,5 @@ module.exports = {
   removeArticleById,
   sendCommentsByArticleId,
   addCommentOnArticleId,
+  addArticle,
 };

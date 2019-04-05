@@ -205,6 +205,29 @@ describe('/', () => {
             expect(res.body.articles).to.eql([]);
           });
       });
+      it('POST status: 201', () => {
+        return request
+          .post('/api/articles')
+          .send({
+            author: 'pinkelephant',
+            title: 'Hare Krishnas',
+            topic: 'religion',
+            body:
+              'Hare Krishna, Hare Krishna, Krishna Krishna, Hare Hare, Hare Rama, Hara Rama, Rama Rama, Hare Hare.” “Hare Krishna, Hare Krishna, Krishna Krishna, Hare Hare, Hare Rama, Hara Rama, Rama Rama, Hare Hare,” said members of the International Society for Krishna Consciousness, adding “Hare Krishna, Hare Krishna, Krishna Krishna, Hare Hare, Hare Rama, Hara Rama, Rama Rama, Hare Hare.” “Hare Krishna, Hare Krishna, Krishna Krishna, Hare Hare, Hare Rama, Hara Rama, Rama Rama, Hare Hare. Hare Krishna, Hare Krishna, Krishna Krishna, Hare Hare, Hare Rama, Hara Rama, Rama Rama, Hare Hare.',
+          })
+          .expect(201)
+          .then(res => {
+            expect(res.body.article).to.contain.keys(
+              'author',
+              'created_at',
+              'body',
+              'topic',
+              'votes',
+              'title',
+            );
+            expect(res.body.article.votes).to.equal(0);
+          });
+      });
       it('GET status 404 for author not in db', () => {
         return request
           .get('/api/articles?author=penelope')
@@ -223,7 +246,7 @@ describe('/', () => {
       });
       it('GET status 200 and serves empty array for topic in db with no content', () => {
         return request
-          .get('/api/articles?topic=homeopathy')
+          .get('/api/articles?topic=religion')
           .expect(200)
           .then(res => {
             expect(res.body.articles).to.eql([]);
@@ -245,9 +268,9 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Invalid Order');
           });
       });
-      it('POST/PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
+      it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
         return request
-          .post('/api/articles')
+          .delete('/api/articles')
           .expect(405)
           .then(res => {
             expect(res.body.msg).to.equal('Method Not Allowed');

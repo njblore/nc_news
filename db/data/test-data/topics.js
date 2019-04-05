@@ -8,7 +8,7 @@ module.exports = [
     slug: 'cats',
   },
   {
-    description: 'Not medicine',
-    slug: 'homeopathy',
+    description: 'Not atheism',
+    slug: 'religion',
   },
 ];

@@ -7,11 +7,13 @@ const {
   removeArticleById,
   sendCommentsByArticleId,
   addCommentOnArticleId,
+  addArticle,
 } = require('../controllers/articles');
 
 articleRouter
   .route('/')
   .get(sendArticles)
+  .post(addArticle)
   .all(methodNotAllowed);
 
 articleRouter
