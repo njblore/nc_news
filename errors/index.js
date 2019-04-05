@@ -19,6 +19,8 @@ exports.handleSQLErrors = (err, req, res, next) => {
     res.status(400).send({ msg: 'Bad Request' });
   } else if (err.code === '23503') {
     res.status(404).send({ msg: err.detail });
+  } else if (err.code === '23502') {
+    res.status(400).send({ msg: `Missing Value for Key '${err.column}'` });
   } else {
     next(err);
   }

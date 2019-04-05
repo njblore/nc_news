@@ -24,9 +24,11 @@ const postNewUser = (req, res, next) => {
       if (users.map(user => user.username).includes(req.body.username)) {
         res.status(422).send({ msg: 'User Already Exists' });
       } else {
-        addUser(req.body).then(([user]) => {
-          res.status(201).send({ user });
-        });
+        addUser(req.body)
+          .then(([user]) => {
+            res.status(201).send({ user });
+          })
+          .catch(next);
       }
     })
     .catch(next);

@@ -73,6 +73,15 @@ describe('/', () => {
             expect(res.body.msg).to.equal('Topic Already Exists');
           });
       });
+      it('POST status: 400 for missing slug on the body', () => {
+        return request
+          .post('/api/topics')
+          .send({ description: 'fun fun fun' })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal("Missing Value for Key 'slug'");
+          });
+      });
       it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
         return request
           .patch('/api/topics')
@@ -322,6 +331,17 @@ describe('/', () => {
             );
           });
       });
+      it('POST status: 400 for missing topic/author on the body', () => {
+        return request
+          .post('/api/articles')
+          .send({ author: 'pinkelephant' })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal(
+              'Missing Value for Key username/topic',
+            );
+          });
+      });
       it('PUT/PATCH/DELETE status: 405 and serves message method not allowed', () => {
         return request
           .delete('/api/articles')
@@ -467,7 +487,6 @@ describe('/', () => {
           .get('/api/articles/3/comments')
           .expect(200)
           .then(res => {
-            console.log(res.body.comments.map(comment => comment.comment_id));
             expect(res.body.comments).to.be.descendingBy('created_at');
           });
       });
@@ -555,7 +574,6 @@ describe('/', () => {
           })
           .expect(201)
           .then(res => {
-            console.log(res.body.comment);
             expect(res.body.comment).to.contain.keys(
               'comment_id',
               'created_at',
@@ -771,6 +789,23 @@ describe('/', () => {
           .expect(422)
           .then(res => {
             expect(res.body.msg).to.equal('User Already Exists');
+          });
+      });
+      it('POST status: 400 for missing username on body', () => {
+        return request
+          .post('/api/users')
+          .send({ name: 'Jim', avatar_url: 'url' })
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal("Missing Value for Key 'username'");
+          });
+      });
+      it('PUT/PATCH/DELETE status 405: Method Not Allowed', () => {
+        return request
+          .patch('/api/users')
+          .expect(405)
+          .then(res => {
+            expect(res.body.msg).to.equal('Method Not Allowed');
           });
       });
     });

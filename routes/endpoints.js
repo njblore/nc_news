@@ -1,6 +1,12 @@
 exports.endpoints = {
-  '/api/topics': { GET: 'serves an array of all topics' },
-  '/api/articles': { GET: 'serves an array of all articles' },
+  '/api/topics': {
+    GET: 'serves an array of all topics',
+    POST: 'post a new topic to the database',
+  },
+  '/api/articles': {
+    GET: 'serves an array of all articles',
+    POST: 'post a new article to the database',
+  },
   '/api/articles/:article_id': {
     GET:
       'serves one article by its id, accepts queries for author, topic, sort_by and order',
@@ -15,6 +21,10 @@ exports.endpoints = {
   '/api/comments/:comment_id': {
     PATCH: 'update votes on a comment by comment_id using inc_votes',
     DELETE: 'delete one comment by its comment_id',
+  },
+  'api/users': {
+    GET: 'serves an array of all users in the database',
+    POST: 'add a new user to the database',
   },
   '/api/users/:username': { GET: 'serves one user by its username' },
 };

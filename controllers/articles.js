@@ -126,6 +126,9 @@ const addCommentOnArticleId = (req, res, next) => {
 };
 
 const addArticle = (req, res, next) => {
+  if (!req.body.username || !req.body.topic) {
+    next({ status: 400, msg: 'Missing Value for Key username/topic' });
+  }
   postArticle(req.body)
     .then(([article]) => {
       res.status(201).send({ article });
