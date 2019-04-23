@@ -4,7 +4,8 @@ exports.endpoints = {
     POST: 'post a new topic to the database',
   },
   '/api/articles': {
-    GET: 'serves an array of all articles',
+    GET:
+      'serves an array of all articles, accepts queries for author, topic, sort_by, order, article_id, limit',
     POST: 'post a new article to the database',
   },
   '/api/articles/:article_id': {
