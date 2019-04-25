@@ -120,6 +120,7 @@ const addCommentOnArticleId = (req, res, next) => {
   }
   postCommentByArticleId(req)
     .then(([comment]) => {
+      console.log(comment);
       res.status(201).send({ comment });
     })
     .catch(next);

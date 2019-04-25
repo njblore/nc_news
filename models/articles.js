@@ -77,26 +77,24 @@ const postCommentByArticleId = req => {
     created_at: created_at.toISOString(),
   };
 
-  return (
-    connection
-      .insert(commentObject)
-      .into('comments')
-      // .returning('*');
-      .then(() => {
-        return connection
-          .select(
-            'comment_id',
-            'author',
-            'comments.created_at',
-            'comments.article_id',
-            'comments.body',
-            'comments.votes',
-          )
-          .from('comments')
-          .where('comments.body', '=', body)
-          .leftJoin('articles', 'comments.article_id', 'articles.article_id');
-      })
-  );
+  return connection
+    .insert(commentObject)
+    .into('comments')
+    .returning('*');
+  // .then(() => {
+  //   return connection
+  //     .select(
+  //       'comment_id',
+  //       'author',
+  //       'comments.created_at',
+  //       'comments.article_id',
+  //       'comments.body',
+  //       'comments.votes',
+  //     )
+  //     .from('comments')
+  //     .where('comments.body', '=', body)
+  //     .leftJoin('articles', 'comments.article_id', 'articles.article_id');
+  // })
 };
 
 const postArticle = req => {
