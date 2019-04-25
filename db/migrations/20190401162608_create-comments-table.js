@@ -1,9 +1,9 @@
 exports.up = function(connection, Promise) {
   return connection.schema.createTable('comments', commentsTable => {
     commentsTable.increments('comment_id').primary();
-    commentsTable.string('author');
+    commentsTable.string('created_by');
     commentsTable
-      .foreign('author')
+      .foreign('created_by')
       .references('username')
       .inTable('users')
       .onDelete('CASCADE');
