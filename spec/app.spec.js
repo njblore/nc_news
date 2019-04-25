@@ -513,7 +513,7 @@ describe('/', () => {
             expect(res.body.comment).to.contain.keys(
               'comment_id',
               'created_at',
-              'created_by',
+              'author',
               'body',
               'article_id',
               'votes',
