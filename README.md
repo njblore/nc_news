@@ -2,7 +2,7 @@
 
 An API for the back end of a northcoders news site, where users can post articles and comments and vote on them.
 
-It uses a PSQL database and is built with KNEX.js and Express, hosted on Heroku. View the API here: https://northcoders-news-server.herokuapp.com/api
+It uses a PSQL database and is built with KNEX.js and Express, hosted on Heroku. View the API live here: https://northcoders-news-server.herokuapp.com/api
 
 ## Installation
 
